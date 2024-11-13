@@ -1,4 +1,5 @@
 const express = require("express")
+const multer = require('multer');
 
 const {
   uploadPdf,
@@ -6,8 +7,10 @@ const {
 } = require("./controller")
 
 const router = express.Router()
+const upload = multer();
 
-router.post("/resume-upload", uploadPdf)
+router.post("/resume-upload", upload.single('resume_file'), uploadPdf)
+
 router.post("/job-description", uploadText)
 
 module.exports = router
