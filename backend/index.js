@@ -1,15 +1,13 @@
 const express = require('express');
 const app = express();
+const bcrypt = require('bcrypt');
 const port = 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// **************************************************************
-// Put your implementation here
-// If necessary to add imports, please do so in the section above
-
 const users = [];
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function uniqueId() {
     let id;
@@ -21,7 +19,7 @@ function uniqueId() {
 }
 
 // Task 4: Registration endpoint
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const {email, password, username} = req.body;
 
     if (!email || !password || !username){
@@ -30,31 +28,51 @@ app.post('/register', (req, res) => {
 
     // TO DO : Validate that email is unique, hash password with bcrypt
 
-    // return res.status(400);
+    // Check email format
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+    }
 
+    // Check email unique
+    const isEmailTaken = users.some(user => user.email === email);
+    if (isEmailTaken) {
+        return res.status(409).json({ error: 'Email already registered' });
+    }
 
-    const newUser = {
-        id: uniqueId(),
-        email,
-        password,
-        username
-    };
+    try {
+        // Hash the password with bcrypt
+        const saltRounds = 10; // Adjust salt rounds as needed (higher is more secure but slower)
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    users.push(newUser); // adding to the array
+        // Create new user object with hashed password
+        const newUser = {
+            id: uniqueId(),
+            email,
+            password: hashedPassword, // Store the hashed password, not the plain text
+            username
+        };
 
-    res.status(201).json({ message: 'User registered'});
+        // Add the new user to the array
+        users.push(newUser);
+
+        // Send success response
+        res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+        console.error("Error hashing password:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
 // Task 5: Log-in endpoint
-app.post('/register', (req, res) => {
+app.post('/login', (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password ){
         return res.status(404).json({ error: 'Missing username or password'});
     }
 
-    // Generate a JWT token with expiration.
+    // TO DO: Generate a JWT token with expiration.
 
     // return res.status(400);
 
