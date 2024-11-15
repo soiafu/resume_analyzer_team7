@@ -1,13 +1,25 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Registration from './registration.js';
+import { Login, Register } from './login'; 
 
 function App() {
   return (
-    <div className="App">
-      <Registration />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div >
+                <div><Login /></div>
+                <div><Register /></div>
+              </div>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
-
 export default App;

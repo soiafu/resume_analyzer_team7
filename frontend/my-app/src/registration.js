@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './loginRegStyles.js';
 import axios from 'axios';
 
 const Register = () => {
@@ -10,72 +11,75 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    setError(''); // Clear any previous errors
-    setLoading(true); // Show loading state
+    setError(''); 
+    setLoading(true); 
 
     try {
-      // Send the registration data directly to the server
       const postResponse = await axios.post('http://localhost:5000/api/register', {
         email,
         username,
         password,
       });
       console.log('POST response data:', postResponse.data);
-      // Handle success (e.g., navigate to another page or display success message)
-    } catch (err) {
-      // Handle errors
+    } 
+    catch (err) {
       if (err.response) {
-        // If the server responded with an error status
         setError(err.response.data.message || 'An error occurred');
       } else if (err.request) {
-        // If no response was received from the server
         setError('No response from server. Please try again later.');
       } else {
-        // If there was an error setting up the request
         setError('Error occurred while making the request.');
       }
     } finally {
-      setLoading(false); // Hide loading state after request completes
+      setLoading(false); 
     }
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div style={styles.body}>
+      <div style={styles.leftback}>
+        <form onSubmit={handleRegister}>
+        <div style={styles.container}>
+            <h2 style={styles.title}>Create an Account</h2>
+            
+              <div style={styles.inputContainer}>
+                <label style={styles.label}>Email</label>
+                <input
+                  type="text"
+                  value={email}
+                  placeholder="Enter email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.inputContainer}>
+                <label style={styles.label}>Username</label>
+                <input
+                  type="text"
+                  value={username}
+                  placeholder="Enter username"
+                  onChange={(e) => setUsername(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.inputContainer}>
+                <label style={styles.label}>Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  placeholder="Enter password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+              {error && <p style={styles.error}>{error}</p>}
+              <button type="submit" style={styles.button}>Sign Up</button>
+
+          </div>
+        </form>
         </div>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p>{error}</p>}  {/* Display error message if any */}
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
     </div>
   );
 };
