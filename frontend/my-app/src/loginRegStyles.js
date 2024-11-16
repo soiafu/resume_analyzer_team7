@@ -130,10 +130,6 @@ const styles = {
     marginTop: '15px',
     transition: 'background-color 0.3s ease, color 0.3s ease, transform 0.3s ease',
   },
-  createAccountButtonHover: {
-    backgroundColor: '#007bff',
-    color: '#fff',
-  },
   error: {
     color: 'red',
     fontSize: '14px',

@@ -76,6 +76,15 @@ const Register = () => {
                   style={styles.input}
                 />
               </div>
+              <div style={styles.inputContainer}>
+                <label style={styles.label}>Confirm Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  placeholder="Re-enter password"
+                  style={styles.input}
+                />
+              </div>
               {error && <p style={styles.error}>{error}</p>}
               <button type="submit" style={styles.button}>Sign Up</button>
               </div>
@@ -104,8 +113,12 @@ const Login = () => {
         email,
         password,
       });
+      // authentication
+      const token = postResponse.data.token;
       console.log('POST response data:', postResponse.data);
-      //window.location.href = 'dashboard.js';
+      localStorage.setItem('authToken', token); 
+      console.log('Login successful, token stored');
+      navigate('/dashboard');
     } 
     catch (err) {
       if (err.response) {
