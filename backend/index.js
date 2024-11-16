@@ -3,10 +3,12 @@ const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors')
+
 const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
 app.use(cors());
 
 const users = [];
@@ -22,7 +24,7 @@ function uniqueId() {
 }
 
 // Task 4: Registration endpoint
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     const {email, password, username} = req.body;
 
     if (!email || !password || !username){
@@ -68,7 +70,7 @@ app.post('/register', async (req, res) => {
 
 
 // Task 5: Log-in endpoint
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password ){
@@ -78,8 +80,6 @@ app.post('/login', (req, res) => {
     // TO DO: Generate a JWT token with expiration.
 
     // return res.status(400);
-
-
     res.status(201).json(token);
 });
 
