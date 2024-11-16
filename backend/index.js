@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors')
 const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors());
 
 const users = [];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
