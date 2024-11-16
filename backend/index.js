@@ -2,12 +2,23 @@ const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+<<<<<<< HEAD
 const cors = require('cors')
+=======
+const cors = require("cors")
+>>>>>>> 16260ac061683456274ce7aae75b674164beb29c
 const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+<<<<<<< HEAD
 app.use(cors());
+=======
+app.use(cors({
+    origin: 'http://localhost:3000', 
+}));
+  
+>>>>>>> 16260ac061683456274ce7aae75b674164beb29c
 
 const users = [];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,7 +33,7 @@ function uniqueId() {
 }
 
 // Task 4: Registration endpoint
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     const {email, password, username} = req.body;
 
     if (!email || !password || !username){
@@ -68,7 +79,7 @@ app.post('/register', async (req, res) => {
 
 
 // Task 5: Log-in endpoint
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password ){
@@ -78,8 +89,6 @@ app.post('/login', (req, res) => {
     // TO DO: Generate a JWT token with expiration.
 
     // return res.status(400);
-
-
     res.status(201).json(token);
 });
 
