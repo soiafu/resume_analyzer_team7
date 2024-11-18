@@ -8,6 +8,7 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] =useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
@@ -27,7 +28,7 @@ const Register = () => {
     catch (err) {
       if (err.response) {
         console.log('Backend error message:', err.response.data.message);
-        setError(err.response.data.response);
+        setError(err.response.data.error);
       } 
       else if (err.request) {
         setError('No response from server. Please try again later.');
