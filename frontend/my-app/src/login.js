@@ -10,12 +10,17 @@ const Register = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] =useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(''); 
     setLoading(true); 
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+    }
+    
     try {
       const postResponse = await axios.post('http://localhost:5000/api/register', {
         email,
@@ -84,8 +89,9 @@ const Register = () => {
                 <label style={styles.label}>Confirm Password</label>
                 <input
                   type="password"
-                  value={password}
+                  value={confirmPassword}
                   placeholder="Re-enter password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   style={styles.input}
                 />
               </div>
