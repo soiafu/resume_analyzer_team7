@@ -4,12 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
 const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz'; 
 const cors = require('cors')
-
 const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
 app.use(cors());
 
 const users = [];
