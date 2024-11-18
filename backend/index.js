@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken'); // Import the JWT library
 const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz'; 
 const cors = require('cors')
 const port = 5000;
+const path = require('path');
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -34,7 +36,6 @@ function saveTokens(tokens) {
 
 
 // STORING AND LOADING USER INFO 
-const path = require('path');
 const usersFile = path.resolve(__dirname, 'users.json');if (!fs.existsSync(usersFile)) {
     fs.writeFileSync(usersFile, JSON.stringify([]));
 }
@@ -133,7 +134,7 @@ app.post('/api/login', async (req, res) => {
         tokens.push({ token, email, createdAt: new Date().toISOString() });
         saveTokens(tokens);
 
-        
+
         // Respond with the token
         res.status(200).json({ token });
     } catch (error) {
@@ -141,6 +142,32 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 
+});
+
+app.post('/api/isValidToken', (req, res) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ error: 'Token is required' });
+    }
+
+    try {
+        // Verify the token using JWT
+        const decoded = jwt.verify(token, secretKey);
+
+        // Check if the token exists in tokens.json
+        const tokens = loadTokens();
+        const tokenExists = tokens.some(storedToken => storedToken.token === token);
+
+        if (!tokenExists) {
+            return res.status(401).json({ error: 'Invalid Token' });
+        }
+
+        res.status(200).json({ message: 'Token is valid', user: decoded });
+    } catch (error) {
+        console.error('Token validation error:', error);
+        res.status(401).json({ error: 'Invalid Token' });
+    }
 });
 
 
