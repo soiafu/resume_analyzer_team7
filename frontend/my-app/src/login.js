@@ -23,10 +23,13 @@ const Register = () => {
       });
       console.log('POST response data:', postResponse.data);
     } 
+
     catch (err) {
       if (err.response) {
-        setError(err.response.data.message || 'An error occurred');
-      } else if (err.request) {
+        console.log('Backend error message:', err.response.data.message);
+        setError(err.response.data.response);
+      } 
+      else if (err.request) {
         setError('No response from server. Please try again later.');
       } else {
         setError('Error occurred while making the request.');
