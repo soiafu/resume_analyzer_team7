@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
@@ -10,17 +11,51 @@ const port = 5000;
 app.use(express.json());
 app.use(cors());
 
-const users = [];
+// TOKEN STORAGE
+const tokensFile = path.resolve(__dirname, 'tokens.json');
+if (!fs.existsSync(tokensFile)) {
+    fs.writeFileSync(tokensFile, JSON.stringify([]));
+}
+
+// Function to load tokens from the JSON file
+function loadTokens() {
+    const data = fs.readFileSync(tokensFile, 'utf-8');
+    return JSON.parse(data);
+}
+
+// Function to save tokens to the JSON file
+function saveTokens(tokens) {
+    try {
+        fs.writeFileSync(tokensFile, JSON.stringify(tokens, null, 2));
+    } catch (error) {
+        console.error("Error saving tokens:", error);
+    }
+}
+
+
+// STORING AND LOADING USER INFO 
+const path = require('path');
+const usersFile = path.resolve(__dirname, 'users.json');if (!fs.existsSync(usersFile)) {
+    fs.writeFileSync(usersFile, JSON.stringify([]));
+}
+
+// Function to load users from the JSON file
+function loadUsers() {
+    const data = fs.readFileSync(usersFile, 'utf-8');
+    return JSON.parse(data);
+}
+
+// Function to save users to the JSON file
+function saveUsers(users) {
+    try {
+        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+    } catch (error) {
+        console.error("Error saving users:", error);
+    }
+}
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function uniqueId() {
-    let id;
-    do {
-        // Generate a random 9-digit number
-        id = Math.floor(100000000 + Math.random() * 900000000);
-    } while (users.find(u => u.id === id)); // Ensure the ID is unique
-    return id.toString(); // Convert to string to maintain consistency
-}
 
 // Task 4: Registration endpoint
 app.post('/api/register', async (req, res) => {
@@ -37,9 +72,10 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Invalid email format' });
     }
 
+    const users = loadUsers();
+
     // Check email unique
-    const isEmailTaken = users.some(user => user.email === email);
-    if (isEmailTaken) {
+    if (users.find(user => user.email === email)) {
         return res.status(409).json({ error: 'Email already registered' });
     }
 
@@ -49,15 +85,10 @@ app.post('/api/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Create new user object with hashed password
-        const newUser = {
-            id: uniqueId(),
-            email,
-            password: hashedPassword, // Store the hashed password, not the plain text
-            username
-        };
+        users.push({ email, password: hashedPassword, username });
 
-        // Add the new user to the array
-        users.push(newUser);
+        // Save user
+        saveUsers(users);
 
         // Send success response
         res.status(201).json({ message: 'User registered successfully' });
@@ -69,7 +100,7 @@ app.post('/api/register', async (req, res) => {
 
 
 // Task 5: Log-in endpoint
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password ){
@@ -78,18 +109,40 @@ app.post('/api/login', (req, res) => {
 
     // TO DO: Generate a JWT token with expiration.
 
+    const users = loadUsers();
+
     // Validate user credentials
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(user => user.email === email);
+    
     if (!user) {
-        return res.status(401).json({ error: 'Invalid email or password.' });
+        return res.status(401).json({ error: 'Invalid email.' });
+    }
+    try {
+        // Compare the provided password with the stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        // Generate a JWT token (valid for 1 hour)
+        const token = jwt.sign({ email: user.email, username: user.username }, secretKey, { expiresIn: '1h' });
+
+        // Save the token to tokens.json
+        const tokens = loadTokens();
+        tokens.push({ token, email, createdAt: new Date().toISOString() });
+        saveTokens(tokens);
+
+        
+        // Respond with the token
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Error validating password:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 
-    // Generate a JWT token
-    const payload = { email };
-    const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
-
-    res.status(201).json(token);
 });
+
 
 
 
