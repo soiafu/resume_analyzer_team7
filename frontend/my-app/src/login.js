@@ -20,7 +20,7 @@ const Register = () => {
     if (password !== confirmPassword) {
       setError('Passwords do not match');
     }
-    
+
     try {
       const postResponse = await axios.post('http://localhost:5000/api/register', {
         email,
@@ -132,7 +132,7 @@ const Login = () => {
     } 
     catch (err) {
       if (err.response) {
-        setError(err.response.data.message || 'An error occurred');
+        setError(err.response.data.error || 'An error occurred');
       } else if (err.request) {
         setError('No response from server. Please try again later.');
       } else {
