@@ -8,12 +8,18 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] =useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(''); 
     setLoading(true); 
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+    }
 
     try {
       const postResponse = await axios.post('http://localhost:5000/api/register', {
@@ -27,7 +33,7 @@ const Register = () => {
     catch (err) {
       if (err.response) {
         console.log('Backend error message:', err.response.data.message);
-        setError(err.response.data.response);
+        setError(err.response.data.error);
       } 
       else if (err.request) {
         setError('No response from server. Please try again later.');
@@ -83,8 +89,9 @@ const Register = () => {
                 <label style={styles.label}>Confirm Password</label>
                 <input
                   type="password"
-                  value={password}
+                  value={confirmPassword}
                   placeholder="Re-enter password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   style={styles.input}
                 />
               </div>
@@ -125,7 +132,7 @@ const Login = () => {
     } 
     catch (err) {
       if (err.response) {
-        setError(err.response.data.message || 'An error occurred');
+        setError(err.response.data.error || 'An error occurred');
       } else if (err.request) {
         setError('No response from server. Please try again later.');
       } else {
