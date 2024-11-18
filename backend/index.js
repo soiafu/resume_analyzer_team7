@@ -29,20 +29,20 @@ app.post('/api/register', async (req, res) => {
     const {email, password, username} = req.body;
 
     if (!email || !password || !username){
-        return res.status(404).json({ error: 'Please fill required fields'});
+        res.status(404).json({ error: 'Please fill required fields'});
     }
 
     // TO DO : Validate that email is unique, hash password with bcrypt
 
     // Check email format
     if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
+        res.status(400).json({ error: 'Invalid email format' });
     }
 
     // Check email unique
     const isEmailTaken = users.some(user => user.email === email);
     if (isEmailTaken) {
-        return res.status(409).json({ error: 'Email already registered' });
+        res.status(409).json({ error: 'Email already registered' });
     }
 
     try {
