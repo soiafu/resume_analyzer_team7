@@ -8,13 +8,14 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(''); 
+    setSuccess('');
     setLoading(true); 
 
     if (password !== confirmPassword) {
@@ -28,7 +29,7 @@ const Register = () => {
         password,
       });
       console.log('POST response data:', postResponse.data);
-      navigate('/dashboard');
+      setSuccess('Account Created! Please scroll up to log in.');
     } 
 
     catch (err) {
@@ -97,6 +98,7 @@ const Register = () => {
                 />
               </div>
               {error && <p style={styles.error}>{error}</p>}
+              {success && <div style={{ color: 'green' }}>{success}</div>}
               <button type="submit" style={styles.button}>Sign Up</button>
               </div>
           </div>
