@@ -7,9 +7,8 @@ const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz';
 const cors = require('cors')
 const port = 5000;
 const path = require('path');
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
-// Middleware to parse JSON bodies
 app.use(express.json());
 app.use(cors());
 
@@ -19,13 +18,11 @@ if (!fs.existsSync(tokensFile)) {
     fs.writeFileSync(tokensFile, JSON.stringify([]));
 }
 
-// Function to load tokens from the JSON file
 function loadTokens() {
     const data = fs.readFileSync(tokensFile, 'utf-8');
     return JSON.parse(data);
 }
 
-// Function to save tokens to the JSON file
 function saveTokens(tokens) {
     try {
         fs.writeFileSync(tokensFile, JSON.stringify(tokens, null, 2));
@@ -34,19 +31,16 @@ function saveTokens(tokens) {
     }
 }
 
-
-// STORING AND LOADING USER INFO 
+// USER STORAGE
 const usersFile = path.resolve(__dirname, 'users.json');if (!fs.existsSync(usersFile)) {
     fs.writeFileSync(usersFile, JSON.stringify([]));
 }
 
-// Function to load users from the JSON file
 function loadUsers() {
     const data = fs.readFileSync(usersFile, 'utf-8');
     return JSON.parse(data);
 }
 
-// Function to save users to the JSON file
 function saveUsers(users) {
     try {
         fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
@@ -55,18 +49,13 @@ function saveUsers(users) {
     }
 }
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-// Task 4: Registration endpoint
+// REGISTER API 
 app.post('/api/register', async (req, res) => {
     const {email, password, username} = req.body;
 
     if (!email || !password || !username){
         return res.status(404).json({ error: 'Please fill required fields'});
     }
-
-    // TO DO : Validate that email is unique, hash password with bcrypt
 
     // Check email format
     if (!emailRegex.test(email)) {
@@ -100,15 +89,13 @@ app.post('/api/register', async (req, res) => {
 });
 
 
-// Task 5: Log-in endpoint
+// LOGIN API
 app.post('/api/login', async (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password ){
         return res.status(404).json({ error: 'Missing username or password'});
     }
-
-    // TO DO: Generate a JWT token with expiration.
 
     const users = loadUsers();
 
@@ -134,7 +121,6 @@ app.post('/api/login', async (req, res) => {
         tokens.push({ token, email, createdAt: new Date().toISOString() });
         saveTokens(tokens);
 
-
         // Respond with the token
         res.status(200).json({ token });
     } catch (error) {
@@ -144,6 +130,7 @@ app.post('/api/login', async (req, res) => {
 
 });
 
+// VALIDATE TOKEN API
 app.post('/api/isValidToken', (req, res) => {
     const { token } = req.body;
 
@@ -169,8 +156,6 @@ app.post('/api/isValidToken', (req, res) => {
         res.status(401).json({ error: 'Invalid Token' });
     }
 });
-
-
 
 
 // Start the server (only if not in test mode)
