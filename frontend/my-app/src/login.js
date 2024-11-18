@@ -8,9 +8,9 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] =useState('');
-  const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -28,6 +28,7 @@ const Register = () => {
         password,
       });
       console.log('POST response data:', postResponse.data);
+      navigate('/dashboard');
     } 
 
     catch (err) {
