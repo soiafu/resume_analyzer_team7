@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // Import the JWT library
+const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz'; 
 const cors = require('cors')
 
 const port = 5000;
@@ -79,7 +80,16 @@ app.post('/api/login', (req, res) => {
 
     // TO DO: Generate a JWT token with expiration.
 
-    // return res.status(400);
+    // Validate user credentials
+    const user = users.find(u => u.email === email && u.password === password);
+    if (!user) {
+        return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    // Generate a JWT token
+    const payload = { email };
+    const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+
     res.status(201).json(token);
 });
 
