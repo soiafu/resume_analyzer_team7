@@ -23,6 +23,13 @@ function App() {
               <div >
                 <div><Login /></div>
                 <div><Register /></div>
+              </div>
+            }
+          />
+
+          <Route path="/dashboard"
+            element={
+              <div >
                 <Dashboard
                   fitScore={fitScore}
                   matchedSkills={matchedSkills}
