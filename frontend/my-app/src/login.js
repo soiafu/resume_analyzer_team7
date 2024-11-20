@@ -115,6 +115,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tokError, setTokError] = useState('');
 
   const handleLogin =  async (e) => {
     e.preventDefault();
@@ -126,19 +127,47 @@ const Login = () => {
         email,
         password,
       });
-      // authentication
+
       const token = postResponse.data.token;
+
+      //testing invalid token
+      //const token='invalidtoken';
+
       console.log('POST response data:', postResponse.data);
       localStorage.setItem('authToken', token); 
       console.log('Login successful, token stored');
-      navigate('/dashboard');
+
+      //validate the token
+      try {const tokenResponse = await axios.post('http://localhost:5000/api/isValidToken', {token,});
+        console.log('Token is authentic');
+        navigate('/dashboard/Dashboard');
+      }
+      catch (e) {
+        if (e.response) {
+            console.log('Token is not valid');
+            setTokError(e.response.data.error);
+            console.log('Error Token:', tokError);
+            console.error('Token validation failed:', e.response.data.error);
+            localStorage.removeItem('authToken');
+            return;
+        } else if (e.request) {
+            setError('No response from server. Please try again later.');
+            return;
+        } else {
+            setError('An unexpected error occurred.');
+            return;
+        }
+      }
+    
     } 
     catch (err) {
       if (err.response) {
         setError(err.response.data.error || 'An error occurred');
-      } else if (err.request) {
+      } 
+      else if (err.request) {
         setError('No response from server. Please try again later.');
-      } else {
+      } 
+      else {
         setError('Error occurred while making the request.');
       }
     } finally {
@@ -173,6 +202,7 @@ const Login = () => {
               />
             </div>
             {error && <p style={styles.error}>{error}</p>}
+            {tokError && <p style={styles.error}>{tokError}</p>}
             <button type="submit" style={styles.button}>Login</button>
             <p>
               Don't have an account?{' '}
