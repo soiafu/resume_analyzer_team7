@@ -32,7 +32,7 @@ const Upload = () => {
 
   }
   return (
-    <div>
+    <div style={styles.containerLeft}>
       <h1 style={styles.title}>Upload Your Resume</h1>
       <h2 style={styles.sectionTitle}>Upload a PDF</h2>
       <form id="upload-form">
@@ -71,7 +71,7 @@ const Description = () => {
 
   }
   return (
-    <div>
+    <div style={styles.containerLeft}>
       <form id="job-form">
           <h1 style={styles.title}>Enter Your Job Description</h1>
           <textarea id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>

@@ -15,6 +15,7 @@ const styles = {
       borderRadius: '10px',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
       backgroundColor: '#fff',
+      flexDirection: 'row',
     },
     title: {
       fontSize: '28px',
@@ -77,6 +78,30 @@ const styles = {
       color: 'red',
       fontSize: '14px',
       marginBottom: '10px',
+    },
+    containerLeft: {
+      flex: 1, // Ensures it takes equal space
+      padding: '30px',
+      borderRadius: '10px',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+      backgroundColor: '#fff',
+      display: 'flex',
+      flexDirection: 'column', // Aligns children vertically
+      justifyContent: 'flex-start', // Aligns items at the top
+      alignItems: 'center', // Centers content horizontally
+      margin: '20px', // Adds spacing around the section
+    },
+    containerRight: {
+      flex: 1, // Ensures it takes equal space
+      padding: '30px',
+      borderRadius: '10px',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+      backgroundColor: '#fff',
+      display: 'flex',
+      flexDirection: 'column', // Aligns children vertically
+      justifyContent: 'center', // Centers content vertically
+      alignItems: 'center', // Centers content horizontally
+      margin: '20px', // Adds spacing around the section
     },
   };
   
