@@ -115,6 +115,8 @@ app.post('/api/login', async (req, res) => {
 
         // Generate a JWT token (valid for 1 hour)
         const token = jwt.sign({ email: user.email, username: user.username }, secretKey, { expiresIn: '1h' });
+        //testing for 10s
+        //const token = jwt.sign({ email: user.email, username: user.username }, secretKey, { expiresIn: '10s' });
 
         // Save the token to tokens.json
         const tokens = loadTokens();

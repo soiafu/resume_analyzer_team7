@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './loginRegStyles.js';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -108,6 +109,33 @@ const Register = () => {
   );
 };
 
+const checkTokenExpiration = () => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    const decoded = jwtDecode(token);
+    const expirationTime = decoded.exp * 1000; 
+    const currentTime = Date.now();
+
+    const timeRemaining = expirationTime - currentTime;
+
+    if (timeRemaining <= 0) {
+      // Token has expired
+      handleTokenExpired();
+    } else {
+      setTimeout(() => {
+        checkTokenExpiration();
+      }, Math.min(timeRemaining, 60000)); 
+    }
+  }
+};
+
+const handleTokenExpired = () => {
+  alert('Your token has expired. Please log in again.');
+  console.log('Token expired. Logging out...');
+  localStorage.removeItem('authToken');
+  window.location.href = '/';
+};
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -140,7 +168,8 @@ const Login = () => {
       //validate the token
       try {const tokenResponse = await axios.post('http://localhost:5000/api/isValidToken', {token,});
         console.log('Token is authentic');
-        navigate('/dashboard/Dashboard');
+        checkTokenExpiration();
+        navigate('/dashboard');
       }
       catch (e) {
         if (e.response) {
