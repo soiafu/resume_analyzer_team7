@@ -6,7 +6,6 @@ const styles = {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundImage: `url(${backgroundImg})`,
       fontFamily: '"Lato", sans-serif',
     },
     container: {
@@ -44,6 +43,40 @@ const styles = {
       marginBottom: '8px',
       borderRadius: '6px',
       backgroundColor: '#f8f9fa',
+    },
+    overview: {
+      display: 'flex', 
+      backgroundImage: `url(${backgroundImg})`,
+      justifyContent: 'spaceBetween',
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column', // Stack elements vertically
+      gap: '10px', // Adds space between elements
+      width: '100%',
+  },
+    textarea: {
+        width: '100%', // Ensure textarea fills the width of the form
+        padding: '10px',
+        margin: '0', // Remove any default margins that might cause unwanted spacing
+    },
+    button: {
+        width: '100%', // Ensure button fills the width of the form
+        padding: '10px 20px',
+        backgroundColor: '#007bff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '16px',
+    },
+    buttonHover: {
+        backgroundColor: '#0056b3',
+    },
+    error: {
+      color: 'red',
+      fontSize: '14px',
+      marginBottom: '10px',
     },
   };
   
