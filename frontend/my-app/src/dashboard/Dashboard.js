@@ -60,6 +60,14 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
     } 
   }
 
+  const [wordCount, setWordCount] = useState(0);
+  const wordCounter = (event) => {
+    setWordCount(0);
+    const text = event.target.value;
+    const count = text.replace(/\s/g, '').length;
+    setWordCount(count);
+  }
+
   return(
   <div style={styles.background}>
     <div style={styles.container}>
@@ -76,9 +84,9 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
         <div style={styles.containerDescription}>
           <form id="job-form">
               <h1 style={styles.title}>Enter Your Job Description</h1>
-              <textarea id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
+              <textarea onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
               <div id="char-count-container">
-                <span id="char-count">0</span> / 5000 characters
+                <span id="char-count">{wordCount}</span> / 5000 characters
               </div>
               <button style={styles.button} type="submit">Submit</button>
           </form>

@@ -3,6 +3,7 @@ import backgroundImg from '../background3.png';
 const styles = {
     background: {
       backgroundImage: `url(${backgroundImg})`,
+      backgroundColor: '#bf2b02',
       backgroundSize: 'cover', // Ensures the image covers the element
       backgroundRepeat: 'no-repeat', // Avoid repeats
       height: '100vh', // Full viewport height
@@ -105,7 +106,7 @@ const styles = {
         padding: '30px',
         borderRadius: '10px',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-        backgroundColor: 'rgba(191, 43, 2, 0.8)',
+        backgroundColor: 'rgba(240, 240, 240, 0.95)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -117,7 +118,7 @@ const styles = {
         padding: '30px',
         borderRadius: '10px',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-        backgroundColor: 'rgba(191, 43, 2, 0.5)',
+        backgroundColor: 'rgba(240, 240, 240, 0.95)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
