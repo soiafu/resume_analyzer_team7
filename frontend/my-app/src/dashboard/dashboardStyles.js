@@ -16,15 +16,7 @@ const styles = {
       alignItems: 'center',
       fontFamily: '"Lato", sans-serif',
     },
-    container: {
-      width: '90%',
-      maxWidth: '800px',
-      padding: '30px',
-      borderRadius: '10px',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-      backgroundColor: '#fff',
-      flexDirection: 'row',
-    },
+    
     title: {
       fontSize: '28px',
       fontWeight: '700',
@@ -87,30 +79,50 @@ const styles = {
       fontSize: '14px',
       marginBottom: '10px',
     },
-    containerResume: {
-      flex: 1, // Ensures it takes equal space
-      padding: '30px',
-      borderRadius: '10px',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-      backgroundColor: 'rgba(191, 43, 2, 0.8)', // Slightly transparent
-      display: 'flex',
-      flexDirection: 'column', // Aligns children vertically
-      justifyContent: 'flex-start', // Aligns items at the top
-      alignItems: 'center', // Centers content horizontally
-      margin: '20px', // Adds spacing around the section
-    },
 
-    containerDescription: {
-      flex: 1, 
+    container: {
+      width: '90%',
+      maxWidth: '800px',
       padding: '30px',
       borderRadius: '10px',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-      backgroundColor: 'rgba(191, 43, 2, 0.5)', 
       display: 'flex',
-      flexDirection: 'column', 
-      justifyContent: 'flex-start', 
-      alignItems: 'center', 
-      margin: '20px',
+      flexDirection: 'row',
+      alignItems: 'center', // Centers children vertically
+      margin: 'auto'
+    },
+    leftContainer: {
+      flex: 1,
+      padding: '20px',
+    },
+    rightContainer: {
+        flex: 1,
+        backgroundColor: '#e0e0e0',
+        padding: '20px',
+        flexDirection: 'row',
+    },
+    containerResume: {
+        flex: 1,
+        padding: '30px',
+        borderRadius: '10px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+        backgroundColor: 'rgba(191, 43, 2, 0.8)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        margin: '20px',
+    },
+    containerDescription: {
+        flex: 1,
+        padding: '30px',
+        borderRadius: '10px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+        backgroundColor: 'rgba(191, 43, 2, 0.5)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        margin: '20px',
     },
   };
   

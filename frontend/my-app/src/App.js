@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Login, Register } from './login'; 
-import {Upload, Description, Dashboard} from './dashboard/Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import 'react-circular-progressbar/dist/styles.css';
 
 function App() {
@@ -30,8 +30,6 @@ function App() {
           <Route path="/dashboard"
             element={
               <div>
-                <div><Upload /></div>
-                <div><Description /></div>
                 <div>
                   <Dashboard
                   fitScore={fitScore}
@@ -39,6 +37,7 @@ function App() {
                   suggestions={suggestions}
                 />
                 </div>
+                
               </div>
             }
           />
