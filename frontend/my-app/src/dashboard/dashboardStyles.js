@@ -1,6 +1,14 @@
 import backgroundImg from '../background3.png';
 
 const styles = {
+    background: {
+      backgroundImage: `url(${backgroundImg})`,
+      backgroundSize: 'cover', // Ensures the image covers the element
+      backgroundRepeat: 'no-repeat', // Avoid repeats
+      height: '100vh', // Full viewport height
+      width: '100%', // Full width
+    },
+
     body: {
       height: '100vh',
       display: 'flex',
@@ -64,7 +72,7 @@ const styles = {
     button: {
         width: '100%', // Ensure button fills the width of the form
         padding: '10px 20px',
-        backgroundColor: '#007bff',
+        backgroundColor: '#040a06',
         color: 'white',
         border: 'none',
         borderRadius: '4px',
@@ -79,29 +87,30 @@ const styles = {
       fontSize: '14px',
       marginBottom: '10px',
     },
-    containerLeft: {
+    containerResume: {
       flex: 1, // Ensures it takes equal space
       padding: '30px',
       borderRadius: '10px',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-      backgroundColor: '#fff',
+      backgroundColor: 'rgba(191, 43, 2, 0.8)', // Slightly transparent
       display: 'flex',
       flexDirection: 'column', // Aligns children vertically
       justifyContent: 'flex-start', // Aligns items at the top
       alignItems: 'center', // Centers content horizontally
       margin: '20px', // Adds spacing around the section
     },
-    containerRight: {
-      flex: 1, // Ensures it takes equal space
+
+    containerDescription: {
+      flex: 1, 
       padding: '30px',
       borderRadius: '10px',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-      backgroundColor: '#fff',
+      backgroundColor: 'rgba(191, 43, 2, 0.5)', 
       display: 'flex',
-      flexDirection: 'column', // Aligns children vertically
-      justifyContent: 'center', // Centers content vertically
-      alignItems: 'center', // Centers content horizontally
-      margin: '20px', // Adds spacing around the section
+      flexDirection: 'column', 
+      justifyContent: 'flex-start', 
+      alignItems: 'center', 
+      margin: '20px',
     },
   };
   

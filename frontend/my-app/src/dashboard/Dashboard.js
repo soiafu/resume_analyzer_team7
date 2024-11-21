@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './dashboardStyles';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { CircularProgressbar } from 'react-circular-progressbar';
+import backgroundImg from '../background3.png';
 
 const Upload = () => {
   const [pdf, setPDF] = useState('');
@@ -32,7 +33,7 @@ const Upload = () => {
 
   }
   return (
-    <div style={styles.containerLeft}>
+    <div style={styles.containerResume}>
       <h1 style={styles.title}>Upload Your Resume</h1>
       <h2 style={styles.sectionTitle}>Upload a PDF</h2>
       <form id="upload-form">
@@ -51,7 +52,7 @@ const Description = () => {
   const handleUpload = async (e) => {
     setDescription('');
     try {
-      const postResponse = await axios.post('http://localhost:5000/api/resume-upload', {
+      const postResponse = await axios.post('http://localhost:5000/api/job-description', {
         description,
       });
       console.log('POST response data:', postResponse.data);
@@ -71,7 +72,7 @@ const Description = () => {
 
   }
   return (
-    <div style={styles.containerLeft}>
+    <div style={styles.containerDescription}>
       <form id="job-form">
           <h1 style={styles.title}>Enter Your Job Description</h1>
           <textarea id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
@@ -89,7 +90,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const navigate = useNavigate();
   return (
     <div style={styles.body}>
-      <div style={styles.container}>
+      <div style={styles.containerDashboard}>
         <h1 style={styles.title}>Resume Analysis Dashboard</h1>
         
         <div style={styles.section}>
