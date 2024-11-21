@@ -6,7 +6,7 @@ const styles = {
       backgroundColor: '#bf2b02',
       backgroundSize: 'cover', // Ensures the image covers the element
       backgroundRepeat: 'no-repeat', // Avoid repeats
-      height: '100vh', // Full viewport height
+      height: '200vh', // Full viewport height
       width: '100%', // Full width
     },
 
