@@ -10,18 +10,23 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const navigate = useNavigate();
   const [pdf, setPDF] = useState(null);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleUpload = async (e) => {
     e.preventDefault();
     setPDF(null);
-    setError('')
+    setError('');
+    setSuccess('');
     try {
       const formData = new FormData();
-      formData.append('file', pdf); 
-      const postResponse = await axios.post('http://localhost:5000/api/resume-upload', {
-        formData,
+      formData.append('resume_file', pdf); 
+      const postResponse = await axios.post('http://localhost:5000/api/resume-upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Ensure that the content type is set to multipart/form-data
+        },
       });
       console.log('POST response data:', postResponse.data);
+      setSuccess('PDF Submitted!');
     } 
 
     catch (err) {
@@ -81,6 +86,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
           <form id="upload-form" onSubmit={handleUpload}>
             <input type="file" id="file-upload" name="file-upload" onChange={(e) => setPDF(e.target.files[0])}/>
             {error && <p style={styles.error}>{error}</p>}
+            {success && <div style={{ color: 'green' }}>{success}</div>}
             <button type="submit">Upload</button>
           </form>
         </div>
