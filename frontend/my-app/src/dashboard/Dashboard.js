@@ -46,13 +46,16 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const [description, setDescription] = useState('');
   
   const handleDescription = async (e) => {
+    e.preventDefault();
     setDescription('');
-    setError('')
+    setError('');
+    setSuccess('');
     try {
       const postResponse = await axios.post('http://localhost:5000/api/job-description', {
-        description,
+        "job-description": description
       });
       console.log('POST response data:', postResponse.data);
+      setSuccess('Submitted.')
     } 
 
     catch (err) {
@@ -92,12 +95,14 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
         </div>
 
         <div style={styles.containerDescription}>
-          <form id="job-form">
+          <form id="job-form" onSubmit={handleDescription}>
               <h1 style={styles.title}>Enter Your Job Description</h1>
-              <textarea onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
+              <textarea onChange={(e) => setDescription(e.target.value)} onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
               </div>
+              {error && <p style={styles.error}>{error}</p>}
+              {success && <div style={{ color: 'green' }}>{success}</div>}
               <button style={styles.button} type="submit">Submit</button>
           </form>
         </div>
