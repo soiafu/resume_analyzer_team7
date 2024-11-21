@@ -8,6 +8,9 @@ const cors = require('cors')
 const port = 5000;
 const path = require('path');
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const multer = require('multer');
+const router = express.Router()
+const upload = multer();
 
 app.use(express.json());
 app.use(cors());
