@@ -44,18 +44,19 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   }
 
   const [description, setDescription] = useState('');
-  
+  const [succ, setSucc] = useState('');
+
   const handleDescription = async (e) => {
     e.preventDefault();
     setDescription('');
     setError('');
-    setSuccess('');
+    setSucc('');
     try {
       const postResponse = await axios.post('http://localhost:5000/api/job-description', {
         "job-description": description
       });
       console.log('POST response data:', postResponse.data);
-      setSuccess('Submitted.')
+      setSucc('Submitted.')
     } 
 
     catch (err) {
@@ -102,7 +103,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
                 <span id="char-count">{wordCount}</span> / 5000 characters
               </div>
               {error && <p style={styles.error}>{error}</p>}
-              {success && <div style={{ color: 'green' }}>{success}</div>}
+              {succ && <div style={{ color: 'green' }}>{succ}</div>}
               <button style={styles.button} type="submit">Submit</button>
           </form>
         </div>
