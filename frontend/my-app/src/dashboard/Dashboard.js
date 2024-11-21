@@ -8,22 +8,25 @@ import backgroundImg from '../background3.png';
 
 const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const navigate = useNavigate();
-  const [pdf, setPDF] = useState('');
+  const [pdf, setPDF] = useState(null);
   const [error, setError] = useState('');
 
   const handleUpload = async (e) => {
-    setPDF('');
+    e.preventDefault();
+    setPDF(null);
     setError('')
     try {
+      const formData = new FormData();
+      formData.append('file', pdf); 
       const postResponse = await axios.post('http://localhost:5000/api/resume-upload', {
-        pdf,
+        formData,
       });
       console.log('POST response data:', postResponse.data);
     } 
 
     catch (err) {
       if (err.response) {
-        console.log('Backend error message:', err.response.data.message);
+        console.log('Error: ', err.response.data.error);
         setError(err.response.data.error);
       } 
       else if (err.request) {
@@ -75,9 +78,10 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
         <div style={styles.containerResume}>
           <h1 style={styles.title}>Upload Your Resume</h1>
           <h2 style={styles.sectionTitle}>Upload a PDF</h2>
-          <form id="upload-form">
-            <input type="file" id="file-upload" name="file-upload" accept=".pdf" />
-            <button onClick={handleUpload} type="submit">Upload</button>
+          <form id="upload-form" onSubmit={handleUpload}>
+            <input type="file" id="file-upload" name="file-upload" onChange={(e) => setPDF(e.target.files[0])}/>
+            {error && <p style={styles.error}>{error}</p>}
+            <button type="submit">Upload</button>
           </form>
         </div>
 

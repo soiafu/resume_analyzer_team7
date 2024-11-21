@@ -1,6 +1,6 @@
-# resume_analyzer_team7
+### resume_analyzer_team7
 
-Project name:
+# AI-Powered Resume Analyzer and Job Matcher
 
 Description:
 
