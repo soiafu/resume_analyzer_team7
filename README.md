@@ -43,3 +43,9 @@ Start the React development server with:
 <pre> npm start </pre>
 The app will run at http://localhost:3000 by default.
 
+**Run Tests** (optional)  
+You can run the tests using:
+<pre> npm test </pre>
+
+
+
