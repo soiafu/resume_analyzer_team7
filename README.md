@@ -22,7 +22,6 @@ The AI-Powered Resume Analyzer and Job Matcher is a platform that analyzes resum
 - Empower users to enhance career prospects efficiently.
 
 ## Instructions for setting up locally
-Setting Up Locally
 Follow these steps to set up the project on your local machine:
 
 **Clone the Repository**
