@@ -80,6 +80,13 @@ const styles = {
       fontSize: '14px',
       marginBottom: '10px',
     },
+    loaderContainer: {
+      marginTop: '10px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    
 
     container: {
       width: '90%',
