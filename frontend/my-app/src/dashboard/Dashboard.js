@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styles from './dashboardStyles';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import backgroundImg from '../background3.png';
 
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken'); // Get token from localStorage
+
+  if (!token) {
+    // If no token is found, redirect to the login page
+    return <Navigate to="/" replace />;
+  }
+  console.log('the token is ', token);
+  // If token exists, render the children (protected route)
+  return children;
+};
+
 const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const navigate = useNavigate();
   const [pdf, setPDF] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [token, setToken] = useState(null);
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -159,4 +173,4 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   );
 };
 
-export default Dashboard;
+export {Dashboard, PrivateRoute};
