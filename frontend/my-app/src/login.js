@@ -119,7 +119,6 @@ const checkTokenExpiration = () => {
     const timeRemaining = expirationTime - currentTime;
 
     if (timeRemaining <= 0) {
-      // Token has expired
       handleTokenExpired();
     } else {
       setTimeout(() => {
@@ -133,7 +132,7 @@ const handleTokenExpired = () => {
   alert('Your token has expired. Please log in again.');
   console.log('Token expired. Logging out...');
   localStorage.removeItem('authToken');
-  window.location.href = '/';
+  window.location.href = '/login';
 };
 
 
@@ -165,7 +164,6 @@ const Login = () => {
       localStorage.setItem('authToken', token); 
       console.log('Login successful, token stored');
 
-      //validate the token
       try {const tokenResponse = await axios.post('http://localhost:5000/api/isValidToken', {token,});
         console.log('Token is authentic');
         checkTokenExpiration();

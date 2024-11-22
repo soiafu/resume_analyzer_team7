@@ -4,10 +4,10 @@ const styles = {
     background: {
       backgroundImage: `url(${backgroundImg})`,
       backgroundColor: '#bf2b02',
-      backgroundSize: 'cover', // Ensures the image covers the element
-      backgroundRepeat: 'no-repeat', // Avoid repeats
-      height: '200vh', // Full viewport height
-      width: '100%', // Full width
+      backgroundSize: 'cover', 
+      backgroundRepeat: 'no-repeat', 
+      height: '200vh', 
+      width: '100%', 
     },
 
     body: {
@@ -35,10 +35,10 @@ const styles = {
       color: '#333',
     },
     circularProgressContainer: {
-        marginTop: '20px', // Adjust spacing between title/paragraph and progress bar
+        marginTop: '20px', 
         width: '200px',
         height: '200px',
-        margin: '0 auto', // Center the progress bar
+        margin: '0 auto',
       },
     listItem: {
       fontSize: '16px',
@@ -53,17 +53,17 @@ const styles = {
     },
     form: {
       display: 'flex',
-      flexDirection: 'column', // Stack elements vertically
-      gap: '10px', // Adds space between elements
+      flexDirection: 'column', 
+      gap: '10px', 
       width: '100%',
   },
     textarea: {
-        width: '100%', // Ensure textarea fills the width of the form
+        width: '100%', 
         padding: '10px',
-        margin: '0', // Remove any default margins that might cause unwanted spacing
+        margin: '0', 
     },
     button: {
-        width: '100%', // Ensure button fills the width of the form
+        width: '100%', 
         padding: '10px 20px',
         backgroundColor: '#040a06',
         color: 'white',
@@ -95,7 +95,7 @@ const styles = {
       borderRadius: '10px',
       display: 'flex',
       flexDirection: 'row',
-      alignItems: 'center', // Centers children vertically
+      alignItems: 'center',
       margin: 'auto'
     },
     leftContainer: {

@@ -7,16 +7,51 @@ import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { TailSpin } from "react-loader-spinner";
 import backgroundImg from '../background3.png';
+import { jwtDecode } from 'jwt-decode';
+
+//protect dashboard route
+const checkTokenExpiration = () => {
+  const token = localStorage.getItem('authToken');
+  if(token==null){
+    handleTokenNull();
+  }
+  else if (token) {
+    const decoded = jwtDecode(token);
+    const expirationTime = decoded.exp * 1000; 
+    const currentTime = Date.now();
+
+    const timeRemaining = expirationTime - currentTime;
+
+    if (timeRemaining <= 0) {
+      handleTokenExpired();
+    } else {
+      setTimeout(() => {
+        checkTokenExpiration();
+      }, Math.min(timeRemaining, 60000)); 
+    }
+  }
+};
+
+const handleTokenNull = () => {
+  alert('Please log in to view this protected page.');
+  console.log('Can not view protected page. Going back to login...');
+  localStorage.removeItem('authToken');
+  window.location.href = '/login';
+};
+
+const handleTokenExpired = () => {
+  alert('Your token has expired. Please log in again.');
+  console.log('Token expired. Logging out...');
+  localStorage.removeItem('authToken');
+  window.location.href = '/login';
+};
 
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('authToken'); // Get token from localStorage
-
-  if (!token) {
-    // If no token is found, redirect to the login page
-    return <Navigate to="/" replace />;
-  }
+  const token = localStorage.getItem('authToken'); 
+  window.onload = () => {
+    checkTokenExpiration();
+  };
   console.log('the token is ', token);
-  // If token exists, render the children (protected route)
   return children;
 };
 
@@ -29,6 +64,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [descLoading, setDescLoading] = useState(false);
 
+  //uploading the resume
   const handleUpload = async (e) => {
     e.preventDefault();
     setPDF(null);
@@ -68,13 +104,15 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
 
   }
 
+  //uploading the description
   const [description, setDescription] = useState('');
   const [succ, setSucc] = useState('');
+  const [err, setErr] = useState('');
 
   const handleDescription = async (e) => {
     e.preventDefault();
     setDescription('');
-    setError('');
+    setErr('');
     setSucc('');
     try {
       setDescLoading(true);
@@ -90,18 +128,19 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
       if (err.response) {
         setDescLoading(false);
         console.log('Backend error message:', err.response.data.message);
-        setError(err.response.data.error);
+        setErr(err.response.data.error);
       } 
       else if (err.request) {
         setDescLoading(false);
-        setError('No response from server. Please try again later.');
+        setErr('No response from server. Please try again later.');
       } else {
         setDescLoading(false);
-        setError('Error occurred while making the request.');
+        setErr('Error occurred while making the request.');
       }
     } 
   }
 
+  //letter counter for description
   const [wordCount, setWordCount] = useState(0);
   const wordCounter = (event) => {
     setWordCount(0);
@@ -133,7 +172,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
               </div>
-              {error && <p style={styles.error}>{error}</p>}
+              {err && <p style={styles.error}>{err}</p>}
               {succ && <div style={{ color: 'green' }}>{succ}</div>}
               {descLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
               <button style={styles.button} type="submit">Submit</button>
