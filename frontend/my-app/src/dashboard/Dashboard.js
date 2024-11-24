@@ -117,6 +117,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
     setSucc('');
     try {
       setDescLoading(true);
+
       const postResponse = await axios.post('http://localhost:5000/api/job-description', {
         "job-description": description
       });

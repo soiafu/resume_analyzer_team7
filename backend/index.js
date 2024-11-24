@@ -190,6 +190,7 @@ app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) =>
             "status": "error"
         })
     }
+
   
     try {
         const resume = await pdfParse(file.buffer)
