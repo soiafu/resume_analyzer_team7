@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import './App.css';
 import { Login, Register } from './login'; 
 import {Dashboard, PrivateRoute} from './dashboard/Dashboard';
@@ -18,6 +19,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login"
             element={
               <div >
