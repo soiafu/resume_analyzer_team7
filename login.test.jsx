@@ -46,3 +46,47 @@ describe('Sign Up Testing', () => {
         }
     });
 });
+
+
+describe('Log In Testing', () => {
+    test('Successful Login', async () => {
+        const newUser = {
+            email: 'alreadyregistered@example.com',
+            password: 'testPassword',
+        };
+        
+
+        const response = await axios.post('http://localhost:5000/api/login', newUser);
+        expect(response.status).toBe(200); 
+        //expect(response.data.message).toBe('Success'); returns token
+    });
+
+    test('Unsuccessful Login', async () => {
+        const newUser = {
+            email:  'alreadyregistered@example.com',
+            password: 'wrongPassword',
+        };
+
+        try {
+            await axios.post('http://localhost:5000/api/login', newUser);
+        } catch (error) {
+            expect(error.response.status).toBe(401); 
+            expect(error.response.data.error).toBe('Invalid email or password');
+        }
+
+    });
+
+    test('Invalid Input', async () => {
+        const newUser = {
+            email: '',
+            password: 'testPassword',
+        };
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/login', newUser);
+        } catch (error) {
+            expect(error.response.status).toBe(404);
+            expect(error.response.data.error).toBe('Missing username or password');
+        }
+    });
+});

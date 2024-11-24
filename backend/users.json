@@ -15,8 +15,13 @@
     "username": "maryam"
   },
   {
-    "email": "maryam123@gmail.com",
-    "password": "$2b$10$oXSU.nkrmwh6LIqgJeRJ/eUdXnUoWiN7xyXibdx0kdeXnHymcDiIy",
-    "username": "maryam"
+    "email": "success@example.com",
+    "password": "$2b$10$UdqT8M2pcv2Kv5/iPmj3GuS9DWT8EyE/OayvXU.reexV1PCUuiOiW",
+    "username": "testing"
+  },
+  {
+    "email": "alreadyregistered@example.com",
+    "password": "$2b$10$dGmjD1JzKPARIdor7l4zS.lYlpdDEoAEXIy20clKNH4oTglpdxCue",
+    "username": "testingregistered"
   }
 ]
