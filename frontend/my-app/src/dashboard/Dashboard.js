@@ -8,6 +8,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import { TailSpin } from "react-loader-spinner";
 import backgroundImg from '../background3.png';
 import { jwtDecode } from 'jwt-decode';
+import { jsPDF } from "jspdf";
 
 //protect dashboard route
 const checkTokenExpiration = () => {
@@ -149,6 +150,15 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
     setWordCount(count);
   }
 
+
+function makePDF(text) {
+    const doc = new jsPDF(); 
+    doc.text(text, 10, 10);
+    const pdfBlob = doc.output("blob");
+    setPDF(pdfBlob); 
+    console.log("PDF generated and stored in state.");
+}
+
   return(
   <div style={styles.background}>
     <div style={styles.container}>
@@ -158,10 +168,15 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
           <h2 style={styles.sectionTitle}>Upload a PDF</h2>
           <form id="upload-form" onSubmit={handleUpload}>
             <input type="file" id="file-upload" name="file-upload" onChange={(e) => setPDF(e.target.files[0])}/>
-            {error && <p style={styles.error}>{error}</p>}
-            {success && <div style={{ color: 'green' }}>{success}</div>}
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
             <button type="submit">Upload</button>
+          </form>
+          <form id="upload-form" onSubmit={handleUpload}>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Enter text here"></textarea>
+            {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
+            <button type="submit" onClick={(e) => makePDF(e.target.value)}>Generate PDF</button>
+            {error && <p style={styles.error}>{error}</p>}
+            {success && <div style={{ color: 'green' }}>{success}</div>}
           </form>
         </div>
 

@@ -16,12 +16,12 @@
   },
   {
     "email": "success@example.com",
-    "password": "$2b$10$UdqT8M2pcv2Kv5/iPmj3GuS9DWT8EyE/OayvXU.reexV1PCUuiOiW",
+    "password": "$2b$10$z5E3GXWt8T1sQC6Bz3g6O.0HlTaoD9torP3k7V/XPJOReaxtXhlxu",
     "username": "testing"
   },
   {
     "email": "alreadyregistered@example.com",
-    "password": "$2b$10$dGmjD1JzKPARIdor7l4zS.lYlpdDEoAEXIy20clKNH4oTglpdxCue",
+    "password": "$2b$10$3p/Y9Brq5JZYIUCk1QPVauVgORobBKtdEbY63EKd7gt.Wzo1jco1O",
     "username": "testingregistered"
   }
 ]

@@ -1,4 +1,7 @@
 import axios from 'axios';
+const FormData = require('form-data');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 
 describe('Sign Up Testing', () => {
     test('invalid input', async () => {
@@ -89,4 +92,46 @@ describe('Log In Testing', () => {
             expect(error.response.data.error).toBe('Missing username or password');
         }
     });
+});
+
+
+describe('File Upload Testing', () => {
+    test('No file', async() => {
+        const formData = new FormData();
+        try{
+            const response = await axios.post('http://localhost:5000/api/resume-upload', formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data', // Ensure the content type is set to multipart/form-data
+                },
+            });
+        }
+        catch (error){
+            expect(error.response.status).toBe(400);
+            expect(error.response.data.error).toBe("File not found");
+        }
+    });
+
+    //need to fix, do not know how to send file
+    test('Successful File Upload', async () => {
+        const formData = new FormData();
+        const fs = require('fs');
+        const filePath = './mock_resume.pdf'; 
+        const mockFileStream = fs.createReadStream(filePath); 
+        formData.append('resume_file', mockFileStream);
+
+   
+        const response = await axios.post('http://localhost:5000/api/resume-upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        
+        expect(response.status).toBe(200);
+        expect(response.data.message).toBe('Resume uploaded successfully.');
+    });
+
+    //add test for invalid file type
+
+    //add test for file size is too large
+    
 });
