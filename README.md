@@ -3,6 +3,7 @@
 # AI-Powered Resume Analyzer and Job Matcher
 
 This is a platform where users can upload resumes and receive feedback on improving them, with personalized job recommendations based on resume content.
+![image](https://github.com/user-attachments/assets/51c25803-e5fa-4116-a775-e1ed41c2f5eb)
 
 ### Team members:
 Team Git / Team 7
