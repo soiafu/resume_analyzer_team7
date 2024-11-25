@@ -39,6 +39,9 @@ This will install all the required packages.
 Create a .env file in the root directory and configure any required environment variables. Refer to .env.example (if provided) for guidance.
 
 **Run the Development Server**  
+Run the backend file: backend/index.js 
+Change directory: 
+<pre> cd frontend/my-app </pre> 
 Start the React development server with:
 <pre> npm start </pre>
 The app will run at http://localhost:3000 by default.
