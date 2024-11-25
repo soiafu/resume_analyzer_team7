@@ -15,13 +15,33 @@
     "username": "maryam"
   },
   {
+    "email": "mmm@gmail.com",
+    "password": "$2b$10$qnAbRZI/1rQgHviQvbsa6ebU23q4eE4E1Ao2dWRzlBEVnMlXjgZAm",
+    "username": "mmm"
+  },
+  {
+    "email": "mmmm@gmail.com",
+    "password": "$2b$10$0ZRXOqNEGaPH53R1qopQNeBqQxQ21KrCkoz3nwWfZfy9bRbbQ1jAm",
+    "username": "mm"
+  },
+  {
+    "email": "mm11mm@gmail.com",
+    "password": "$2b$10$ZcPEjkOWCcDWw1Ig9VRxruXFVXhJ.3Wx8x5MHDHWkD3R2iir6oZXW",
+    "username": "mm"
+  },
+  {
+    "email": "mm1mm@gmail.com",
+    "password": "$2b$10$3kMvqV8uVBzUwSuXoUSFCu/uE96LrVia7lHvb.lQ/G0S1sb6rQKFu",
+    "username": "mm"
+  },
+  {
     "email": "success@example.com",
-    "password": "$2b$10$z5E3GXWt8T1sQC6Bz3g6O.0HlTaoD9torP3k7V/XPJOReaxtXhlxu",
+    "password": "$2b$10$tVf4o2pNuIqNatlIn0b9zOZ.BaYFcsVa90o3H5fMu5IVkPvNYiHZ.",
     "username": "testing"
   },
   {
     "email": "alreadyregistered@example.com",
-    "password": "$2b$10$3p/Y9Brq5JZYIUCk1QPVauVgORobBKtdEbY63EKd7gt.Wzo1jco1O",
+    "password": "$2b$10$oyoclUJ6/0d0oH0QSLgXdu2YlPPiP2PqATMXTY9MTMGHpMsbuVHZm",
     "username": "testingregistered"
   }
 ]

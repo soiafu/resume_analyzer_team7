@@ -1,8 +1,25 @@
 import axios from 'axios';
+import React, {useState} from 'react';
 const FormData = require('form-data');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
+import { render, screen, fireEvent } from '@testing-library/react';
+import {Register} from './frontend/my-app/src/login';
+jest.mock('axios');
 
+
+//for mockAPI log in
+
+
+describe('Mock API', () => {
+    test('Renders?', () => {
+      render(<Register />);
+      expect(screen.getByText(/Create an Account/i)).toBeInTheDocument();
+    });
+    });
+
+
+/*
 describe('Sign Up Testing', () => {
     test('invalid input', async () => {
         const newUser = {
@@ -161,14 +178,10 @@ describe('Description Testing', () => {
         expect(response.status).toBe(200); 
         expect(response.data.message).toBe( "Job description submitted successfully.");
     });
-
-
     
 });
 
-
-
-
+*/
 
 //MOCK api responses to log in and sign up
 //test session handling

@@ -21,6 +21,8 @@ const Register = () => {
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
+      setSuccess('');
+      return;
     }
 
     try {
@@ -30,7 +32,8 @@ const Register = () => {
         password,
       });
       console.log('POST response data:', postResponse.data);
-      setSuccess('Account Created! Please scroll up to log in.');
+      setError('');
+      setSuccess(postResponse.data.message);
     } 
 
     catch (err) {
@@ -106,8 +109,7 @@ const Register = () => {
         </form>
       </div>
     </div>
-  );
-};
+)};
 
 const checkTokenExpiration = () => {
   const token = localStorage.getItem('authToken');
