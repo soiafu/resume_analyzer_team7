@@ -18,7 +18,9 @@
     "react-bootstrap": "^2.10.6",
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.3.1",
-    "uploads": "^0.0.1"
+    "react-router-dom": "^7.0.1",
+    "uploads": "^0.0.1",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
