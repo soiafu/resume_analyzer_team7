@@ -24,4 +24,12 @@ The app will run at http://localhost:3000 by default.
 
 **Run Tests** (optional)  
 You can run the tests using:
-<pre> npm test </pre>
+<pre> npm test </pre>  
+
+### **Troubleshooting**
+If npm start does not work and there are missing packages, install these:  
+<pre> npm install react-scripts </pre>  
+
+
+
+
