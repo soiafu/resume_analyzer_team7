@@ -1,37 +1,27 @@
 
-# Setup Instructions
+## Setup Instructions
 
-Follow these steps to set up the project on your local machine.
+**Clone the Repository**
+<pre> git clone https://github.com/soiafu/resume_analyzer_team7 
+ cd resume_analyzer_team7 </pre>
 
----
 
-## Prerequisites
+**Install Dependencies**  
+Make sure you have Node.js installed. Then run:
+<pre> npm install </pre>
+This will install all the required packages.
 
-Ensure the following are installed on your system:
-- [Node.js](https://nodejs.org/) (v14+)
-- npm (v6+) or yarn (v1.22+)
-- Git
+**Set Up Environment Variables**  
+Create a .env file in the root directory and configure any required environment variables. 
 
----
+**Run the Development Server**  
+First, run the backend server: backend/index.js  
+Change directory: 
+<pre> cd frontend/my-app </pre> 
+Start the React development server with:
+<pre> npm start </pre>
+The app will run at http://localhost:3000 by default.
 
-## Installation
-
-1. **Clone the Repository**:
-   ```bash
-   git clone <repository-url>
-   cd <project-directory>
-
-2. **Install Dependencies**:
-  npm install
-
-3. **Set Up Environment Variables**:
-  Create a .env file in the root directory.
-  Add the necessary environment variables as specified in .env.example.
-
----
-
-## Troubleshooting
-If you encounter dependency issues, delete node_modules and reinstall:
-```bash
-rm -rf node_modules
-npm install
+**Run Tests** (optional)  
+You can run the tests using:
+<pre> npm test </pre>
