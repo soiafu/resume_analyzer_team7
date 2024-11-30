@@ -4,12 +4,10 @@ const FormData = require('form-data');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
 import { render, screen, fireEvent } from '@testing-library/react';
-import {Register} from './frontend/my-app/src/login';
-import {Dashboard} from './frontend/my-app/src/dashboard/Dashboard';
+import {Register} from '../frontend/my-app/src/login';
+import {Dashboard} from '../frontend/my-app/src/dashboard/Dashboard';
 import { jest } from '@jest/globals';
 import { Readable } from 'stream'; // Node.js Readable stream
-
-
 jest.mock('axios');
 
 
@@ -21,17 +19,7 @@ describe('API Testing', () => {
   afterEach(() => {
     jest.resetAllMocks(); // Reset all mocks after each test
   });
-
-  /* this one not working idk why
-  // Mock API Rendering Test
-  describe('Mock API', () => {
-    test('Renders Register Component', async () => {
-      render(<Register />);
-      const element = await screen.findByText(/Create an Account/i);
-      expect(element).toBeInTheDocument();
-    });
-  });
-*/
+  
   // Sign-Up Testing
   describe('Sign Up Testing', () => {
     test('Invalid Input', async () => {
@@ -122,7 +110,7 @@ describe('API Testing', () => {
       expect(response.data.token).toBe('fakeToken');
     });
 
-    test('Unsuccessful Login', async () => {
+    test('Unsuccessful Login - Wrong Password', async () => {
       const mockError = {
         response: {
           status: 401,
@@ -144,126 +132,115 @@ describe('API Testing', () => {
         expect(error.response.data.error).toBe('Invalid email or password');
       }
     });
-  });
 
+    test('Unsuccessful Login - No Input', async () => {
+      const mockError = {
+        response: {
+          status: 404,
+          data: { error: 'Please fill required fields'},
+        },
+      };
 
-// File Upload Testing
+      axios.post.mockRejectedValueOnce(mockError);
 
-// Create a mock file that behaves like a stream
-const mockFile = new Readable();
-mockFile._read = () => {}; // Implement _read method
-mockFile.push('dummy content'); // Push data to the stream
-mockFile.push(null); // End the stream
+      const newUser = {
+        email: '',
+        password: '',
+      };
 
-    describe('File Upload Testing', () => {
-        test('Valid PDF file upload', async () => {
-            // Create a new FormData instance
-            const formData = new FormData();
-        
-            // Create a mock valid PDF file stream
-            const validPdfFile = new Readable();
-            validPdfFile._read = () => {}; // Implement _read method for stream
-            validPdfFile.push('dummy content for valid pdf'); // Push content to stream
-            validPdfFile.push(null); // End the stream
-        
-            // Mock file mimicking a valid PDF file
-            validPdfFile.name = 'mock_resume.pdf';
-            validPdfFile.type = 'application/pdf';
-        
-            // Append the mock file stream to the formData
-            formData.append('resume_file', validPdfFile);
-        
-            // Mock the response from axios POST request
-            axios.post.mockResolvedValue({
-              status: 200,
-              data: { message: 'File uploaded successfully' },
-            });
-        
-            // Call the POST request with the formData
-            const response = await axios.post('/upload', formData, {
-              headers: formData.getHeaders(),
-            });
-        
-            // Assertions to check if the upload was successful
-            expect(response.status).toBe(200);
-            expect(response.data.message).toBe('File uploaded successfully');
-          });
-        
-          test('Invalid file type (non-PDF)', async () => {
-            // Create a new FormData instance
-            const formData = new FormData();
-        
-            // Create a mock invalid file (e.g., text file) as a stream
-            const invalidFile = new Readable();
-            invalidFile._read = () => {}; // Implement _read method for stream
-            invalidFile.push('dummy content for invalid file'); // Push content to stream
-            invalidFile.push(null); // End the stream
-        
-            // Mock file mimicking a non-PDF file (e.g., .txt)
-            invalidFile.name = 'mock_resume.txt';
-            invalidFile.type = 'text/plain';
-        
-            // Append the invalid file stream to the formData
-            formData.append('resume_file', invalidFile);
-        
-            // Mock the error response from axios POST request for invalid file type
-            axios.post.mockRejectedValue({
-              response: {
-                status: 400,
-                data: { error: 'Invalid file type' },
-              },
-            });
-        
-            // Call the POST request with the formData and handle the error
-            try {
-              await axios.post('/upload', formData, {
-                headers: formData.getHeaders(),
-              });
-            } catch (error) {
-              // Assertions to check if the error was thrown and contains the expected message
-              expect(error.response.status).toBe(400);
-              expect(error.response.data.error).toBe('Invalid file type');
-            }
-          });
-        
-          test('Oversized file upload', async () => {
-            // Create a new FormData instance
-            const formData = new FormData();
-        
-            // Create a mock oversized file stream (15MB file)
-            const largeFile = new Readable();
-            largeFile._read = () => {}; // Implement _read method for stream
-            largeFile.push('x'.repeat(15 * 1024 * 1024)); // Push large data to stream (15MB)
-            largeFile.push(null); // End the stream
-        
-            // Mock file mimicking a large PDF file
-            largeFile.name = 'large_mock_resume.pdf';
-            largeFile.type = 'application/pdf';
-        
-            // Append the oversized file stream to the formData
-            formData.append('resume_file', largeFile);
-        
-            // Mock the error response for file size too large
-            axios.post.mockRejectedValue({
-              response: {
-                status: 413,
-                data: { error: 'File size too large' },
-              },
-            });
-        
-            // Call the POST request with the formData and handle the error
-            try {
-              await axios.post('/upload', formData, {
-                headers: formData.getHeaders(),
-              });
-            } catch (error) {
-              // Assertions to check if the error was thrown and contains the expected message
-              expect(error.response.status).toBe(413);
-              expect(error.response.data.error).toBe('File size too large');
-            }
-          });
+      try {
+        await axios.post('http://localhost:5000/api/login', newUser);
+      } catch (error) {
+        expect(error.response.status).toBe(404);
+        expect(error.response.data.error).toBe('Please fill required fields');
+      }
     });
 
+  });
+
+  // File Upload Testing
+  // Create a mock file that behaves like a stream
+  const mockFile = new Readable();
+  mockFile._read = () => {}; 
+  mockFile.push('dummy content'); 
+  mockFile.push(null); 
+
+  describe('File Upload Testing', () => {
+      test('Valid PDF file upload', async () => {
+          const formData = new FormData();
+          const validPdfFile = new Readable();
+          validPdfFile._read = () => {}; 
+          validPdfFile.push('dummy content for valid pdf'); 
+          validPdfFile.push(null); 
+          validPdfFile.name = 'mock_resume.pdf';
+          validPdfFile.type = 'application/pdf';
+          formData.append('resume_file', validPdfFile);
+
+          axios.post.mockResolvedValue({
+            status: 200,
+            data: { message: 'File uploaded successfully' },
+          });
+      
+          const response = await axios.post('/upload', formData, {
+            headers: formData.getHeaders(),
+          });
+      
+          expect(response.status).toBe(200);
+          expect(response.data.message).toBe('File uploaded successfully');
+        });
+      
+        test('Invalid file type (non-PDF)', async () => {
+          const formData = new FormData();
+    
+          const invalidFile = new Readable();
+          invalidFile._read = () => {}; 
+          invalidFile.push('dummy content for invalid file'); 
+          invalidFile.push(null); 
+          invalidFile.name = 'mock_resume.txt';
+          invalidFile.type = 'text/plain';
+          formData.append('resume_file', invalidFile);
+          axios.post.mockRejectedValue({
+            response: {
+              status: 400,
+              data: { error: 'Invalid file type' },
+            },
+          });
+
+          try {
+            await axios.post('/upload', formData, {
+              headers: formData.getHeaders(),
+            });
+          } catch (error) {
+            expect(error.response.status).toBe(400);
+            expect(error.response.data.error).toBe('Invalid file type');
+          }
+        });
+      
+        test('Oversized file upload', async () => {
+          const formData = new FormData();
+          const largeFile = new Readable();
+          largeFile._read = () => {}; 
+          largeFile.push('x'.repeat(15 * 1024 * 1024)); 
+          largeFile.push(null); 
+          largeFile.name = 'large_mock_resume.pdf';
+          largeFile.type = 'application/pdf';
+          formData.append('resume_file', largeFile);
+          axios.post.mockRejectedValue({
+            response: {
+              status: 413,
+              data: { error: 'File size too large' },
+            },
+          });
+          try {
+            await axios.post('/upload', formData, {
+              headers: formData.getHeaders(),
+            });
+          } catch (error) {
+            expect(error.response.status).toBe(413);
+            expect(error.response.data.error).toBe('File size too large');
+          }
+        });
+  });
 
   // Job Description Testing
   describe('Description Testing', () => {
@@ -288,7 +265,7 @@ mockFile.push(null); // End the stream
     });
 
     test('Exceeds Character Limit', async () => {
-      const description = 'a'.repeat(5001); // Replace with actual limit
+      const description = 'a'.repeat(5001); 
       axios.post.mockRejectedValue({
         response: {
           status: 400,
