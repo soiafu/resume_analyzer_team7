@@ -25,6 +25,14 @@ const styles = {
       textAlign: 'center',
       color: '#333',
     },
+    wordcount: {
+      fontSize: '15px',
+      fontWeight: '700',
+      marginBottom: '20px',
+      textAlign: 'center',
+      color: '#333',
+    },
+
     section: {
       marginBottom: '30px',
     },

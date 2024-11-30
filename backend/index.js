@@ -264,7 +264,8 @@ app.post('/api/fit-score', async (req, res) => {
             "feedback": [
                 "Include experience with AWS services.",
                 "Add projects demonstrating REST API development."
-            ]
+            ], 
+            "matched_keywords": ["Python", "REST APIs", "AWS"]
         })
     }
 })

@@ -150,7 +150,7 @@ const Dashboard = () => {
     setWordCount(count);
   }
 
-
+// if user pastes resume
 function makePDF(text) {
     const doc = new jsPDF(); 
     doc.text(text, 10, 10);
@@ -159,6 +159,46 @@ function makePDF(text) {
     console.log("PDF generated and stored in state.");
     return(pdfBlob);
 }
+
+const [pdfError, setPdfError] = useState('');
+//for user to download the resume
+function generatePDF(fitScore, matchedKeywords, feedback) {
+  setPdfError('')
+  if(fitScore==('') || matchedKeywords==('') || feedback==('')){
+    setPdfError('Must Get Results Before Downloading')
+    return
+  }
+
+  const doc = new jsPDF();
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+  doc.text("Resume Analysis Report", 105, 20, { align: "center" });
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Fit Score: ${fitScore}%`, 10, 40);
+  doc.setFillColor(200, 200, 200);
+  doc.rect(10, 50, 190, 10, "F");
+  doc.setFont("helvetica", "bold");
+  doc.text("Matched Keywords:", 10, 57);
+  doc.setFont("helvetica", "normal");
+  matchedKeywords.forEach((keyword, index) => {
+    doc.text(`- ${keyword}`, 15, 65 + index * 10);
+  });
+  const feedbackStartY = 65 + matchedKeywords.length * 10 + 10;
+  doc.setFillColor(200, 200, 200);
+  doc.rect(10, feedbackStartY - 7, 190, 10, "F");
+  doc.setFont("helvetica", "bold");
+  doc.text("Feedback:", 10, feedbackStartY);
+  doc.setFont("helvetica", "normal");
+  feedback.forEach((item, index) => {
+    doc.text(`- ${item}`, 15, feedbackStartY + 10 + index * 10);
+  });
+  doc.setFontSize(10);
+  doc.text("Page 1", 105, 290, { align: "center" });
+  doc.save("Resume_Analysis_Report.pdf");
+
+}
+
 
 const [er, setE] = useState('');
 const [resInput, setInput] = useState('');
@@ -181,6 +221,8 @@ const getFitScore = async (e) => {
     console.log('POST response data:', postResponse.data);
     setSuccess(postResponse.data.message);
     setScore(postResponse.data.fit_score);
+    setSuggestions(postResponse.data.feedback);
+    setMatchedSkills(postResponse.data.matched_keywords);
   } 
 
   catch (err) {
@@ -205,8 +247,9 @@ const getFitScore = async (e) => {
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
             <button type="submit">Upload</button>
           </form>
+          <h2 style={styles.sectionTitle}>Or Paste Your Resume to Create a PDF</h2>
           <form id="upload-form" onSubmit={handleUpload}>
-            <textarea id="textInput" rows="10" cols="50" placeholder="Enter text here" onChange={(e) => setInput(e.target.value)}></textarea>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)}></textarea>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
             <button type="submit" onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
@@ -217,6 +260,7 @@ const getFitScore = async (e) => {
         <div style={styles.containerDescription}>
           <form id="job-form" onSubmit={handleDescription}>
               <h1 style={styles.title}>Enter Your Job Description</h1>
+              <h2 style={styles.wordcount} >Do not exceed 5000 characters</h2>
               <textarea onChange={(e) => setDescription(e.target.value)} onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
@@ -280,6 +324,10 @@ const getFitScore = async (e) => {
             <p>Great resume, no improvement suggestions at this time.</p>
           )}
         </div>
+        {pdfError && <p style={styles.error}>{pdfError}</p>}
+        <button onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
+          Download PDF Report
+        </button>
       </div>
       </div>
   </div>
