@@ -121,8 +121,7 @@ const Dashboard = () => {
         "job-description": description
       });
       setDescLoading(false);
-      console.log('POST response data:', postResponse.data);
-      setSucc('Submitted.')
+      setSucc(postResponse.data.message)
     } 
 
     catch (err) {
@@ -251,7 +250,7 @@ const getFitScore = async (e) => {
           <form id="upload-form" onSubmit={handleUpload}>
             <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)}></textarea>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
-            <button type="submit" onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
+            <button type="submit" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
             {success && <div style={{ color: 'green' }}>{success}</div>}
           </form>
@@ -274,8 +273,8 @@ const getFitScore = async (e) => {
         </div>
 
         <form id="get-results" onSubmit={getFitScore}>
-          {er && <p>{er}</p>}
-          <button style={styles.button} type="submit">Get My Results!</button>
+          {er && <p style={styles.error}>{er}</p>}
+          <button style={styles.resultsButton} type="submit">Get My Results!</button>
         </form>
       </div>  
 
@@ -306,7 +305,7 @@ const getFitScore = async (e) => {
               ))}
             </ListGroup>
           ) : (
-            <p>No matched skills found.</p>
+            <p>Find out what skills match your job requirements.</p>
           )}
         </div>
 
@@ -321,11 +320,11 @@ const getFitScore = async (e) => {
               ))}
             </ListGroup>
           ) : (
-            <p>Great resume, no improvement suggestions at this time.</p>
+            <p>See where you need improvement.</p>
           )}
         </div>
         {pdfError && <p style={styles.error}>{pdfError}</p>}
-        <button onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
+        <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
           Download PDF Report
         </button>
       </div>

@@ -250,7 +250,7 @@ app.post('/api/fit-score', async (req, res) => {
 
     if(text==('') || des==('')){
         res.status(400).json({
-            "error": "Invalid input data. Both resume_text and job_description are required.",
+            "error": "Invalid input data. Both resume and job description are required.",
             "status": "failure"
         })
     }

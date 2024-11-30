@@ -3,10 +3,10 @@ import backgroundImg from '../background3.png';
 const styles = {
     background: {
       backgroundImage: `url(${backgroundImg})`,
-      backgroundColor: '#bf2b02',
+      backgroundColor: '#000000',
       backgroundSize: 'cover', 
       backgroundRepeat: 'no-repeat', 
-      height: '200vh', 
+      height: '150vh', 
       width: '100%', 
     },
 
@@ -70,6 +70,16 @@ const styles = {
         padding: '10px',
         margin: '0', 
     },
+    resultsButton: {
+      width: '100%', 
+      padding: '10px 20px',
+      backgroundColor: '#942101',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '16px',
+    },
     button: {
         width: '100%', 
         padding: '10px 20px',
@@ -120,7 +130,7 @@ const styles = {
         flex: 1,
         padding: '30px',
         borderRadius: '10px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 8px 24px rgba(50, 50, 50, 0.2)', // Transparent dark gray shadow
         backgroundColor: 'rgba(240, 240, 240, 0.95)',
         display: 'flex',
         flexDirection: 'column',
@@ -139,7 +149,8 @@ const styles = {
         justifyContent: 'flex-start',
         alignItems: 'center',
         margin: '20px',
-    },
+    }
+    
   };
   
   export default styles;
