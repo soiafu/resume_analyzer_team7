@@ -43,5 +43,10 @@
     "email": "alreadyregistered@example.com",
     "password": "$2b$10$oyoclUJ6/0d0oH0QSLgXdu2YlPPiP2PqATMXTY9MTMGHpMsbuVHZm",
     "username": "testingregistered"
+  },
+  {
+    "email": "123@testing.com",
+    "password": "$2b$10$VU6zir/MitQLvA25EL1MI..3Xqw7.MZI5/kqzmSL3jYsk/DPD.rW.",
+    "username": "mm"
   }
 ]

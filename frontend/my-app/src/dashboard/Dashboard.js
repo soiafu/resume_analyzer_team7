@@ -56,7 +56,7 @@ const PrivateRoute = ({ children }) => {
   return children;
 };
 
-const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const [pdf, setPDF] = useState(null);
   const [error, setError] = useState('');
@@ -64,6 +64,7 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
   const [token, setToken] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [descLoading, setDescLoading] = useState(false);
+  const [resumeContent, setResumeContent] = useState('');
 
   //uploading the resume
   const handleUpload = async (e) => {
@@ -81,10 +82,9 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
         },
       });
       setUploadLoading(false);
-      console.log('POST response data:', postResponse.data);
-      setSuccess('PDF Submitted!');
-      
-
+      console.log("response is: ", postResponse.data.text)
+      setResumeContent(postResponse.data.text);
+      setSuccess(postResponse.data.message);
     } 
 
     catch (err) {
@@ -112,7 +112,6 @@ const Dashboard = ({ fitScore = 0, matchedSkills = [], suggestions = [] }) => {
 
   const handleDescription = async (e) => {
     e.preventDefault();
-    setDescription('');
     setErr('');
     setSucc('');
     try {
@@ -158,7 +157,41 @@ function makePDF(text) {
     const pdfBlob = doc.output("blob");
     setPDF(pdfBlob); 
     console.log("PDF generated and stored in state.");
+    return(pdfBlob);
 }
+
+const [er, setE] = useState('');
+const [resInput, setInput] = useState('');
+const [fitScore, setScore] = useState('');
+const [matchedSkills, setMatchedSkills] = useState('');
+const [suggestions, setSuggestions] = useState('');
+
+const getFitScore = async (e) => {
+  e.preventDefault();
+  setE('');
+  setScore('');
+  
+  try {
+    console.log("resume is: ", resumeContent);
+    console.log("description is: ", description);
+    const postResponse = await axios.post('http://localhost:5000/api/fit-score', {
+        "resume_text": resumeContent,
+        "job_description": description
+    });
+    console.log('POST response data:', postResponse.data);
+    setSuccess(postResponse.data.message);
+    setScore(postResponse.data.fit_score);
+  } 
+
+  catch (err) {
+    if (err.response) {
+      setDescLoading(false);
+      console.log('Backend error message:', err.response.data.message);
+      setE(err.response.data.error);
+    } 
+  }
+}
+
 
   return(
   <div style={styles.background}>
@@ -173,9 +206,9 @@ function makePDF(text) {
             <button type="submit">Upload</button>
           </form>
           <form id="upload-form" onSubmit={handleUpload}>
-            <textarea id="textInput" rows="10" cols="50" placeholder="Enter text here"></textarea>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Enter text here" onChange={(e) => setInput(e.target.value)}></textarea>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
-            <button type="submit" onClick={(e) => makePDF(e.target.value)}>Generate PDF</button>
+            <button type="submit" onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
             {success && <div style={{ color: 'green' }}>{success}</div>}
           </form>
@@ -188,13 +221,20 @@ function makePDF(text) {
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
               </div>
+              {uploadLoading}
               {err && <p style={styles.error}>{err}</p>}
               {succ && <div style={{ color: 'green' }}>{succ}</div>}
               {descLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
               <button style={styles.button} type="submit">Submit</button>
           </form>
         </div>
+
+        <form id="get-results" onSubmit={getFitScore}>
+          {er && <p>{er}</p>}
+          <button style={styles.button} type="submit">Get My Results!</button>
+        </form>
       </div>  
+
 
       <div style={styles.rightContainer}>
 
