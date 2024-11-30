@@ -1,23 +1,20 @@
 import axios from 'axios';
-import React, {useState} from 'react';
 const FormData = require('form-data');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
-import { render, screen, fireEvent } from '@testing-library/react';
-import {Register} from '../frontend/my-app/src/login';
-import {Dashboard} from '../frontend/my-app/src/dashboard/Dashboard';
 import { jest } from '@jest/globals';
-import { Readable } from 'stream'; // Node.js Readable stream
+import { Readable } from 'stream';
 jest.mock('axios');
+const { jsPDF } = require("jspdf");
 
 
 describe('API Testing', () => {
   beforeEach(() => {
-    jest.clearAllMocks(); // Clear any previous mock calls or setups
+    jest.clearAllMocks(); 
   });
 
   afterEach(() => {
-    jest.resetAllMocks(); // Reset all mocks after each test
+    jest.resetAllMocks(); 
   });
   
   // Sign-Up Testing
@@ -158,8 +155,15 @@ describe('API Testing', () => {
 
   });
 
-  // File Upload Testing
-  // Create a mock file that behaves like a stream
+  /*can be done with rendering but I cant figure that out
+  describe('Session Handling', () => {
+    test("Cannot Access Protected Dashboard without Logging In", () => {
+
+    });
+  });
+  */
+
+  // File Upload Testing - Create a mock file that behaves like a stream
   const mockFile = new Readable();
   mockFile._read = () => {}; 
   mockFile.push('dummy content'); 
@@ -242,6 +246,7 @@ describe('API Testing', () => {
         });
   });
 
+
   // Job Description Testing
   describe('Description Testing', () => {
     test('No Description', async () => {
@@ -299,5 +304,97 @@ describe('API Testing', () => {
       expect(response.data.message).toBe('Job description submitted successfully.');
     });
   });
+
+  describe('Scores, Feedback, and Matched Keywords', () => {
+    test('Successful Returns', async() => {
+      const resumeContent = `
+      John Doe's Resume
+        Email: john.doe@email.com
+        Phone: (555) 555-5555
+        LinkedIn: linkedin.com/in/johndoe
+        Experience
+        Software Engineer | ABC Tech | Jan 2020 - Present
+        - Developed and maintained web applications using React and Node.js.
+        - Collaborated with teams to implement features and fix bugs.
+        - Wrote unit and integration tests to ensure quality code.
+        Junior Developer | XYZ Corp | June 2018 - Dec 2019
+        - Assisted with building and optimizing web applications.
+        - Maintained front-end and back-end code for various internal tools.
+        - Contributed to debugging and resolving technical issues.
+        Education
+        Bachelor of Science in Computer Science | University of Example | 2018
+        - Focused on software development, algorithms, and data structures.
+        Skills
+        - JavaScript (React, Node.js, Express)
+        - Python (Flask, Django)
+        - HTML, CSS, SQL
+        - Git, Agile Development, Unit Testing
+      `;
+
+      const description = `
+      We are looking for a skilled and motivated Software Engineer to join our dynamic engineering team. In this role, you will be responsible for designing, developing, and maintaining web and mobile applications. You will collaborate with cross-functional teams to deliver high-quality software solutions and contribute to various stages of the software development lifecycle.
+
+      Responsibilities:
+
+      Design and develop high-quality web and mobile applications.
+      Write clean, maintainable, and efficient code.
+      Collaborate with product managers, designers, and other engineers to deliver robust software solutions.
+      Troubleshoot, debug, and optimize code to improve performance.
+      Implement new features and enhance existing functionalities.
+      Write unit and integration tests to ensure code quality and reliability.
+      Participate in code reviews and contribute to team best practices.
+      Stay up to date with the latest software development trends, tools, and technologies.
+      Requirements:
+
+      Bachelor's degree in Computer Science, Engineering, or related field (or equivalent practical experience).
+      2+ years of experience in software development (web or mobile).
+      Proficiency in JavaScript (React, Node.js), Python, or similar technologies.
+      Strong understanding of algorithms, data structures, and software design principles.
+      Experience with version control systems (e.g., Git).
+      Excellent problem-solving and debugging skills.
+      Strong communication skills and the ability to work well in a team.
+      Experience with Agile development methodologies is a plus.`;
+
+      axios.post.mockResolvedValue({
+        status: 200,
+        data: {
+          message: "Submitted successfully.",
+          fit_score: 85,
+          feedback: [
+            "Include experience with AWS services.",
+            "Add projects demonstrating REST API development."
+          ], 
+          matched_keywords: ["Python", "REST APIs", "AWS"]
+        }
+      });
+      const response = await axios.post('http://localhost:5000/api/fit-score', {
+        "resume_text": resumeContent,
+        "job_description": description
+      });
+      expect(response.status).toBe(200);
+      expect(response.data.message).toBe("Submitted successfully.");
+      expect(response.data.fit_score).toBe(85);
+      expect(response.data.feedback).toEqual([
+        "Include experience with AWS services.",
+        "Add projects demonstrating REST API development."
+      ]); 
+      expect(response.data.matched_keywords).toEqual(["Python", "REST APIs", "AWS"]);
+    })
+  });
 });
 
+
+/*
+TO DO:
+
+Dominic:
+  From Sprint 1 uncompleted:
+  - test text extractions
+  - Test data insertion and retrieval in memory
+
+Eric:
+  From Sprint 1 uncompleted:
+  - Verify that restricted routes enforce login / navigation
+  - Test that the loading spinner appears during API requests.
+  
+*/
