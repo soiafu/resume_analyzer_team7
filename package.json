@@ -1,20 +1,29 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "jest --config ./tests/jest.config.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
+<<<<<<< HEAD
     "configuration": "^4.1.5",
+=======
+    "canvas": "^2.11.2",
+>>>>>>> 878f2a69d46add503f926b8589f049eb2b068b5b
     "cors": "^2.8.5",
     "curl": "^0.1.4",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "form-data": "^4.0.1",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",
     "jwt-decode": "^4.0.0",
     "multer": "^1.4.5-lts.1",
+<<<<<<< HEAD
     "openai": "^4.74.0",
+=======
+    "pdf-parse": "^1.1.1",
+>>>>>>> 878f2a69d46add503f926b8589f049eb2b068b5b
     "pdfkit": "^0.15.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
@@ -25,6 +34,7 @@
     "util": "^0.12.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.25.9",
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",

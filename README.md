@@ -3,7 +3,8 @@
 # AI-Powered Resume Analyzer and Job Matcher
 
 This is a platform where users can upload resumes and receive feedback on improving them, with personalized job recommendations based on resume content.
-![image](https://github.com/user-attachments/assets/51c25803-e5fa-4116-a775-e1ed41c2f5eb)
+![image](https://github.com/user-attachments/assets/b6ac9b00-5ef8-4703-b2ed-3964e2fc469f)
+
 
 ### Team members:
 Team Git / Team 7
@@ -23,32 +24,6 @@ The AI-Powered Resume Analyzer and Job Matcher is a platform that analyzes resum
 - Empower users to enhance career prospects efficiently.
 
 ## Instructions for setting up locally
-Follow these steps to set up the project on your local machine:
-
-**Clone the Repository**
-<pre> git clone https://github.com/soiafu/resume_analyzer_team7 
- cd resume_analyzer_team7 </pre>
-
-
-**Install Dependencies**  
-Make sure you have Node.js installed. Then run:
-<pre> npm install </pre>
-This will install all the required packages.
-
-**Set Up Environment Variables**  
-Create a .env file in the root directory and configure any required environment variables. Refer to .env.example (if provided) for guidance.
-
-**Run the Development Server**  
-Run the backend file: backend/index.js  
-Change directory: 
-<pre> cd frontend/my-app </pre> 
-Start the React development server with:
-<pre> npm start </pre>
-The app will run at http://localhost:3000 by default.
-
-**Run Tests** (optional)  
-You can run the tests using:
-<pre> npm test </pre>
-
+Please refer to docs/SETUP.md
 
 
