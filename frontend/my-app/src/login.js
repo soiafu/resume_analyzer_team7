@@ -19,10 +19,12 @@ const Register = () => {
     setSuccess('');
     setLoading(true); 
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setSuccess('');
-      return;
+    if(password != '' && confirmPassword != ''){
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        setSuccess('');
+        return;
+      }
     }
 
     try {
@@ -62,6 +64,7 @@ const Register = () => {
               <div style={styles.inputContainer}>
                 <label style={styles.label}>Email</label>
                 <input
+                  label="email"
                   type="text"
                   value={email}
                   placeholder="Enter email"

@@ -1,10 +1,11 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "jest --config ./tests/jest.config.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
+    "canvas": "^2.11.2",
     "cors": "^2.8.5",
     "curl": "^0.1.4",
     "dotenv": "^16.4.5",
@@ -25,6 +26,7 @@
     "util": "^0.12.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.25.9",
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",

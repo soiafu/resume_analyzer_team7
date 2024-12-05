@@ -194,20 +194,19 @@ app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) =>
   
     try {
         const resume = await pdfParse(file.buffer)
-  
+        res.status(200).json({
+            "message": "Resume uploaded successfully.",
+            "status": "success",
+            "text": resume.text,
+        })
         // send resume to NLP
-  
+
     } catch {
         res.status(500).json({
             "message": "Error parsing PDF",
             "status": "error"
         })
     }
-  
-    res.status(200).json({
-        "message": "Resume uploaded successfully.",
-        "status": "success"
-    })
 });
 
 // RESUME UPLOAD TEXT
@@ -244,5 +243,31 @@ if (process.env.NODE_ENV !== 'test') {
         console.log(`Server running at http://localhost:${port}`);
     });
 }
+
+app.post('/api/fit-score', async (req, res) => {
+    let text = req.body["resume_text"];
+    let des = req.body ["job_description"];
+
+    if(text==('') || des==('')){
+        res.status(400).json({
+            "error": "Invalid input data. Both resume and job description are required.",
+            "status": "failure"
+        })
+    }
+
+    else{
+        res.status(200).json({
+            "message": "Submitted successfully.",
+            "status": "success", 
+            //mock data
+            "fit_score": 85,
+            "feedback": [
+                "Include experience with AWS services.",
+                "Add projects demonstrating REST API development."
+            ], 
+            "matched_keywords": ["Python", "REST APIs", "AWS"]
+        })
+    }
+})
 
 module.exports = app; // Export the app for testing

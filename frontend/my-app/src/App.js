@@ -7,13 +7,9 @@ import {Dashboard, PrivateRoute} from './dashboard/Dashboard';
 import 'react-circular-progressbar/dist/styles.css';
 
 function App() {
-  const fitScore = 60;
-  const matchedSkills = ['Python', 'Java', 'Javascript', 'React.js'];
-  const suggestions = [
-    'Suggestion 1',
-    'Suggestion 2',
-    'Suggestion 3'
-  ];
+  let fitScore = 0;
+  let matchedSkills = [];
+  let suggestions = [];
   
   return (
     <Router>
