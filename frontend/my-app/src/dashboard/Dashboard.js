@@ -151,6 +151,9 @@ const Dashboard = () => {
 
 // if user pastes resume
 function makePDF(text) {
+    if (text==''){
+      return;
+    }
     const doc = new jsPDF(); 
     doc.text(text, 10, 10);
     const pdfBlob = doc.output("blob");

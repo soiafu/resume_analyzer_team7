@@ -48,5 +48,15 @@
     "email": "123@testing.com",
     "password": "$2b$10$VU6zir/MitQLvA25EL1MI..3Xqw7.MZI5/kqzmSL3jYsk/DPD.rW.",
     "username": "mm"
+  },
+  {
+    "email": "mal@gmail.com",
+    "password": "$2b$10$Qo91g93VCRmblIflVQqLLODzVsUkTE3BJ7C.g3Q7Wl6nWLk3Nh7EK",
+    "username": "mal441"
+  },
+  {
+    "email": "eee@gmail.com",
+    "password": "$2b$10$2Mt3gTwryQkGUVOqMI.u3uaoa7O2kPrT6Nq1dlu89s2k2WDbqaiZi",
+    "username": "eee"
   }
 ]
