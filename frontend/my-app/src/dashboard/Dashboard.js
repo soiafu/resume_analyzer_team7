@@ -152,7 +152,7 @@ const Dashboard = () => {
 // if user pastes resume
 function makePDF(text) {
     if (text==''){
-      return;
+      return('');
     }
     const doc = new jsPDF(); 
     doc.text(text, 10, 10);
@@ -203,6 +203,7 @@ function generatePDF(fitScore, matchedKeywords, feedback) {
 
 
 const [er, setE] = useState('');
+const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
 const [matchedSkills, setMatchedSkills] = useState('');
@@ -210,6 +211,7 @@ const [suggestions, setSuggestions] = useState('');
 
 const getFitScore = async (e) => {
   e.preventDefault();
+  setS('');
   setE('');
   setScore('');
   
@@ -219,7 +221,7 @@ const getFitScore = async (e) => {
         "job_description": description
     });
     console.log('POST response data:', postResponse.data);
-    setSuccess(postResponse.data.message);
+    setS(postResponse.data.message);
     setScore(postResponse.data.fit_score);
     setSuggestions(postResponse.data.feedback);
     setMatchedSkills(postResponse.data.matched_keywords);
@@ -275,6 +277,7 @@ const getFitScore = async (e) => {
 
         <form id="get-results" onSubmit={getFitScore}>
           {er && <p style={styles.error}>{er}</p>}
+          {s && <div style={{ color: 'green' }}>{s}</div>}
           <button style={styles.resultsButton} type="submit">Get My Results!</button>
         </form>
       </div>  
