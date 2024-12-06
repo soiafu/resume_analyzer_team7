@@ -64,7 +64,7 @@ const Register = () => {
               <div style={styles.inputContainer}>
                 <label style={styles.label}>Email</label>
                 <input
-                  label="email"
+                  label="signUpEmail"
                   type="text"
                   value={email}
                   placeholder="Enter email"
@@ -76,6 +76,7 @@ const Register = () => {
               <div style={styles.inputContainer}>
                 <label style={styles.label}>Username</label>
                 <input
+                  label="username"
                   type="text"
                   value={username}
                   placeholder="Enter username"
@@ -87,6 +88,7 @@ const Register = () => {
               <div style={styles.inputContainer}>
                 <label style={styles.label}>Password</label>
                 <input
+                  label="signUpPassword"
                   type="password"
                   value={password}
                   placeholder="Enter password"
@@ -97,6 +99,7 @@ const Register = () => {
               <div style={styles.inputContainer}>
                 <label style={styles.label}>Confirm Password</label>
                 <input
+                  label="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   placeholder="Re-enter password"
@@ -218,7 +221,7 @@ const Login = () => {
               <input
                 type="text"
                 value={email}
-                placeholder="Enter email"
+                placeholder="Enter your email"
                 onChange={(e) => setEmail(e.target.value)}
                 style={styles.input}
               />
@@ -228,7 +231,7 @@ const Login = () => {
               <input
                 type="password"
                 value={password}
-                 placeholder="Enter password"
+                placeholder="Enter your password"
                 onChange={(e) => setPassword(e.target.value)}
                 style={styles.input}
               />
