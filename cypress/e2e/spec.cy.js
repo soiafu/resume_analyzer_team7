@@ -99,56 +99,23 @@ describe('Invalid Inputs', () => {
   
 });
 
+
 describe('Uploading Resume Test', () => {
-  // how to upload a valid resume?
-
-  /*
-  it('Valid PDF Generated', () => {
-    //not passing
-
-    const resumeText = `John Doe's Resume
-    Email: john.doe@email.com
-    Phone: (555) 555-5555
-    LinkedIn: linkedin.com/in/johndoe
-
-    Experience
-    Software Engineer | ABC Tech | Jan 2020 - Present
-    - Developed and maintained web applications using React and Node.js.
-    - Collaborated with teams to implement features and fix bugs.
-    - Wrote unit and integration tests to ensure quality code.
-
-    Junior Developer | XYZ Corp | June 2018 - Dec 2019
-    - Assisted with building and optimizing web applications.
-    - Maintained front-end and back-end code for various internal tools.
-    - Contributed to debugging and resolving technical issues.
-
-    Education
-    Bachelor of Science in Computer Science | University of Example | 2018
-    - Focused on software development, algorithms, and data structures.
-
-    Skills
-    - JavaScript (React, Node.js, Express)
-    - Python (Flask, Django)
-    - HTML, CSS, SQL
-    - Git, Agile Development, Unit Testing
-    `;
-
+  it('Invalid File Type Uploaded', () => {
+    const filePath = 'fail.txt';
     cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('input[type="file"]').attachFile(filePath);
+    cy.get('button[type="submit"]').contains('Upload').click();
+    cy.contains('Invalid file type. Only PDF files are allowed.').should('be.visible');
+  });
 
-    cy.get('textarea[placeholder="Paste the resume here..."]',)
-      .type(resumeText, { parseSpecialCharSequences: false }); // Type the resume content (no special chars processing)
-
-    // Submit the form
-    cy.get('button[type="submit"]').contains('Generate PDF')
-    .should('be.visible')  // Ensure the button is visible
-    .click();
-
-
-
-    // Verify success message
+  it('Valid PDF Uploaded', () => {
+    const filePath = 'test.pdf';
+    cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('input[type="file"]').attachFile(filePath);
+    cy.get('button[type="submit"]').contains('Upload').click();
     cy.contains('Resume uploaded successfully.').should('be.visible');
   });
-  */
 
 
 });
@@ -204,4 +171,4 @@ describe('Uploading Description Test', () => {
     cy.contains('Job description submitted successfully.').should('be.visible');
   });
 
-});
+}); 
