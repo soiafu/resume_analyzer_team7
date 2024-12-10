@@ -5,7 +5,7 @@ describe('Basic Webpage Accessibility Test', () => {
   });
 });
 
-describe('Sign Up', () => {
+describe('Sign Up Test', () => {
   //did not actually make a valid account since it will not pass tests after run once
   it('Account Already Created', () => {
     cy.visit('http://localhost:3000/login'); 
@@ -73,16 +73,30 @@ describe('Log In Test', () => {
 });
 
 describe('Invalid Inputs', () => {
-  it('No Resume or Description Upload', () => {
+  it('No Resume & Description Upload - "Get My Results!"', () => {
     cy.visit('http://localhost:3000/dashboard'); 
     cy.get('button[type="submit"]').contains('Get My Results!').click();
     cy.contains('Invalid input data. Both resume and job description are required.').should('be.visible');
+  });
+
+  it('No Resume & Description Upload - "Download PDF Report"', () => {
+    cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('button').contains('Download PDF Report').click();
+    cy.contains('Must Get Results Before Downloading').should('be.visible');
   });
 
   it('No Resume Upload', () => {
     cy.visit('http://localhost:3000/dashboard'); 
     cy.get('button[type="submit"]').contains('Upload').click();
     cy.contains('File not found').should('be.visible');
+  });
+
+  it('Invalid File Type Uploaded', () => {
+    const filePath = 'fail.txt';
+    cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('input[type="file"]').attachFile(filePath);
+    cy.get('button[type="submit"]').contains('Upload').click();
+    cy.contains('Invalid file type. Only PDF files are allowed.').should('be.visible');
   });
 
   it('Tries to generate an empty PDF', () => {
@@ -96,31 +110,7 @@ describe('Invalid Inputs', () => {
     cy.get('button[type="submit"]').contains('Submit').click();
     cy.contains('Job description not provided.').should('be.visible');
   });
-  
-});
-
-
-describe('Uploading Resume Test', () => {
-  it('Invalid File Type Uploaded', () => {
-    const filePath = 'fail.txt';
-    cy.visit('http://localhost:3000/dashboard'); 
-    cy.get('input[type="file"]').attachFile(filePath);
-    cy.get('button[type="submit"]').contains('Upload').click();
-    cy.contains('Invalid file type. Only PDF files are allowed.').should('be.visible');
-  });
-
-  it('Valid PDF Uploaded', () => {
-    const filePath = 'test.pdf';
-    cy.visit('http://localhost:3000/dashboard'); 
-    cy.get('input[type="file"]').attachFile(filePath);
-    cy.get('button[type="submit"]').contains('Upload').click();
-    cy.contains('Resume uploaded successfully.').should('be.visible');
-  });
-
-
-});
-
-describe('Uploading Description Test', () => {
+  /*
   it('Long Description', () => {
     cy.visit('http://localhost:3000/dashboard'); 
     const description = `
@@ -138,24 +128,56 @@ describe('Uploading Description Test', () => {
     cy.get('button[type="submit"]').contains('Submit').click();
     cy.contains('Job description exceeds character limit.').should('be.visible');
   });
+  */
+});
 
-  it('Valid Job Description', () => {
+describe('Successful Inputs', () => {
+  it('Successful Resume File Upload', () => {
+    const filePath = 'test.pdf';
     cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('input[type="file"]').attachFile(filePath);
+    cy.get('button[type="submit"]').contains('Upload').click();
+    cy.contains('Resume uploaded successfully.').should('be.visible');
+  });
+
+  /*
+  it('Successful Resume Typed', () => {
+    cy.visit('http://localhost:3000/dashboard'); 
+    const description = `demo resume`;
+    cy.get('textarea[placeholder="Paste the resume here..."]',)
+      .type(description, {  parseSpecialCharSequences: false});
+    cy.get('button[type="submit"]').contains('Generate PDF').click();
+    cy.contains('Resume uploaded successfully.').should('be.visible');
+  });*/ 
+
+  it('Successful Description Upload', () => {
+    cy.visit('http://localhost:3000/dashboard'); 
+    const description = `demo job description`;
+    cy.get('textarea[placeholder="Paste the job description here..."]',)
+      .type(description, {  parseSpecialCharSequences: false});
+    cy.get('button[type="submit"]').contains('Submit').click();
+    cy.contains('Job description submitted successfully.').should('be.visible');
+  });
+
+});
+
+describe('End to End', () => {
+  it('Successful End to End', () => {
+    const filePath = 'test.pdf';
+    cy.visit('http://localhost:3000/dashboard'); 
+    cy.get('input[type="file"]').attachFile(filePath);
+    cy.get('button[type="submit"]').contains('Upload').click();
+    cy.contains('Resume uploaded successfully.').should('be.visible');
+
     const description = `
       We are looking for a skilled and motivated Software Engineer to join our dynamic engineering team. In this role, you will be responsible for designing, developing, and maintaining web and mobile applications. You will collaborate with cross-functional teams to deliver high-quality software solutions and contribute to various stages of the software development lifecycle.
-
       Responsibilities:
-
       Design and develop high-quality web and mobile applications.
       Write clean, maintainable, and efficient code.
       Collaborate with product managers, designers, and other engineers to deliver robust software solutions.
       Troubleshoot, debug, and optimize code to improve performance.
-      Implement new features and enhance existing functionalities.
-      Write unit and integration tests to ensure code quality and reliability.
-      Participate in code reviews and contribute to team best practices.
-      Stay up to date with the latest software development trends, tools, and technologies.
-      Requirements:
 
+      Requirements:
       Bachelor's degree in Computer Science, Engineering, or related field (or equivalent practical experience).
       2+ years of experience in software development (web or mobile).
       Proficiency in JavaScript (React, Node.js), Python, or similar technologies.
@@ -169,6 +191,8 @@ describe('Uploading Description Test', () => {
       .type(description, {  parseSpecialCharSequences: false});
     cy.get('button[type="submit"]').contains('Submit').click();
     cy.contains('Job description submitted successfully.').should('be.visible');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('Submitted successfully.').should('be.visible');
+    cy.get('button').contains('Download PDF Report').click();
   });
-
-}); 
+});
