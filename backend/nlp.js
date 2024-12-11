@@ -5,45 +5,51 @@ This file is just for testing out different nlp models
 
 */
 
-const axios = require('axios');
+// Import necessary libraries
+const { OpenAI } = require("openai");
+require("dotenv").config();
 
-// Hugging Face API URL for gpt2-large model
-const apiUrl = "https://api-inference.huggingface.co/models/openai-community/gpt2-large";
-const API_KEY = "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"; // Replace with your API key from Hugging Face
+// Load environment variables
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-const headers = {
-    Authorization: `Bearer ${API_KEY}`,
-    "Content-Type": "application/json",
-};
+if (!OPENAI_API_KEY) {
+    console.error("Please set your OpenAI API key in a .env file.");
+    process.exit(1);
+}
 
-// Function to generate text based on a prompt using the gpt2-large model
-async function generateText(prompt) {
-    // Set up the input data with the prompt and parameters
-    const data = {
-        inputs: prompt,
-        parameters: {
-            max_length: 30, // Maximum length of the generated text
-            num_return_sequences: 5 // Number of generated sequences
-        },
-    };
+// Initialize OpenAI API client
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
+// Define the resume and job description
+const resume = `Experienced software engineer with over 5 years of development experience. Proficient in Python, JavaScript, and cloud computing. Passionate about building scalable and efficient applications.`;
+const jobDescription = `We are looking for a skilled software engineer to join our team. The ideal candidate will have a strong background in software development, experience with cloud technologies, and the ability to work on large-scale applications. Strong proficiency in Python and JavaScript is required.`;
+
+// Define the async function to get the feedback
+async function getFeedback() {
     try {
-        // Call the Hugging Face API for text generation
-        const response = await axios.post(apiUrl, data, { headers });
-        const generatedTexts = response.data;
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. Provide constructive feedback on the following resume to align it better with the given job description. Max 100 words.
 
-        // Display the generated texts
-        console.log("Generated Texts:");
-        generatedTexts.forEach((text, index) => {
-            console.log(`Sequence ${index + 1}: ${text.generated_text}`);
+                    Job Description:
+                    ${jobDescription}
+
+                    Resume:
+                    ${resume}
+
+                    Feedback:` 
+                }
+            ]
         });
+        
+        console.log(completion.choices[0].message.content); // Output the feedback
     } catch (error) {
-        console.error("Error calling Hugging Face API:", error.message);
+        console.error("Error generating completion:", error);
     }
 }
 
-// Example usage: Using a sample prompt
-const prompt = "Hello, I'm a language model,";
-
-// Generate text based on the prompt
-generateText(prompt);
+// Call the function to get the feedback
+getFeedback();
