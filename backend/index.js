@@ -355,7 +355,8 @@ app.post('/api/analyze', async (req, res) => {
         console.log("Fetching fit score...");
         const sentences = [resume_text, job_description];
         const fitScoreResponse = await getFitScore(sentences);
-        const fitScore = fitScoreResponse[0]; // Assuming fit score is the first value in the response
+        const fitScore = Math.round(fitScoreResponse[0] * 100); // Convert to percentage and round it
+
 
         // Fetch feedback from OpenAI model
         console.log("Fetching feedback...");
