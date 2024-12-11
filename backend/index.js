@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
-const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz'; 
+const secretKey = process.env.SECRET_KEY; 
 const cors = require('cors')
 const port = 5000;
 const path = require('path');
@@ -355,7 +355,8 @@ app.post('/api/analyze', async (req, res) => {
         console.log("Fetching fit score...");
         const sentences = [resume_text, job_description];
         const fitScoreResponse = await getFitScore(sentences);
-        const fitScore = fitScoreResponse[0]; // Assuming fit score is the first value in the response
+        const fitScore = Math.round(fitScoreResponse[0] * 100); // Convert to percentage and round it
+
 
         // Fetch feedback from OpenAI model
         console.log("Fetching feedback...");
