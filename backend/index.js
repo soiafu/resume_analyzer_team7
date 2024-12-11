@@ -14,6 +14,7 @@ const pdfParse = require('pdf-parse');
 const multer = require('multer');
 const upload = multer();
 const axios = require("axios");
+const { OpenAI } = require("openai");
 
 
 app.use(express.json());
@@ -273,10 +274,13 @@ app.post("/api/job-description", async (req, res) => {
 
 */
 
-// CALL MODEL
-async function callModel(apiUrl, sentences, modelKey) {
+// CALL FIT SCORE MODEL
+async function getFitScore(sentences) {
+    const API_KEY = process.env.HUGGING_FACE_API_KEY;
+    const API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
+
     const headers = {
-        Authorization: `Bearer ${modelKey}`,
+        Authorization: `Bearer ${API_KEY}`,
         "Content-Type": "application/json",
     };
 
@@ -288,7 +292,7 @@ async function callModel(apiUrl, sentences, modelKey) {
     };
 
     try {
-        const response = await axios.post(apiUrl, data, { headers });
+        const response = await axios.post(API_URL, data, { headers });
         return response.data;
     } catch (error) {
         console.error("Error calling Hugging Face API:", error.response ? error.response.data : error.message);
@@ -296,12 +300,48 @@ async function callModel(apiUrl, sentences, modelKey) {
     }
 }
 
+// CALL FEEDBACK MODEL
+async function getFeedback(resume_text, job_description) {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. Provide 3 distinct pieces of constructive feedback for the following resume to align it better with the given job description. Each feedback point should focus on a different aspect of the resume and be brief, no more than 1 sentence per feedback point. Do not number them.
+
+                    Job Description:
+                    ${job_description}
+
+                    Resume:
+                    ${resume_text}
+
+                    Feedback:` 
+                }
+            ]
+        });
+        
+        const feedbackText = completion.choices[0].message.content;
+
+        // Split the feedback into an array of sentences by looking for sentence-ending punctuation
+        const feedbackArray = feedbackText
+            .split(/(?<=\.)\s+/)  // Split by period followed by space (end of sentence)
+            .map(item => item.trim()) // Trim spaces
+            .filter(item => item.length > 0); // Remove empty items
+
+        return feedbackArray; // Return feedback as an array of sentences
+    } catch (error) {
+        console.error("Error generating completion:", error);
+        throw new Error("Failed to generate feedback.");
+    }
+}
+
 //ANALYZE RESUME AND JOB DESC
 app.post('/api/analyze', async (req, res) => {
-    const API_KEY = "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"; // Replace with your API key
-    const fitScoreModelUrl = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
-    //const feedbackModelUrl = "https://api-inference.huggingface.co/models/your-feedback-model";
-
+    
     try {
         // Extract resume and job description from the request body
         const { resume_text, job_description } = req.body;
@@ -309,26 +349,22 @@ app.post('/api/analyze', async (req, res) => {
         // Validate input
         if (!resume_text || !job_description) {
             return res.status(400).json({ error: "Missing resume_text or job_description" });
-        }
+        }        
 
-        // Prepare the sentences to send to Hugging Face models
-        const sentences = [resume_text, job_description];
-
-        // Fetch fit score, keywords, and feedback from Hugging Face models
+        // Fetch fit score from Hugging Face model
         console.log("Fetching fit score...");
-        const fitScore = await callModel(fitScoreModelUrl, sentences, API_KEY);
+        const sentences = [resume_text, job_description];
+        const fitScoreResponse = await getFitScore(sentences);
+        const fitScore = fitScoreResponse[0]; // Assuming fit score is the first value in the response
 
-        //console.log("Fetching feedback...");
-        //const feedback = await callModel(feedbackModelUrl, sentences, API_KEY);
+        // Fetch feedback from OpenAI model
+        console.log("Fetching feedback...");
+        const feedback = await getFeedback(resume_text, job_description);
 
         // Construct the final response format
         const result = {
-            results: [
-                {
-                    fit_score: fitScore[0], // Assuming fit score is the first value in the response
-                    feedback: "feedback"      // Populate with the model's response
-                }
-            ]
+            fit_score: fitScore, // Fit score from model
+            feedback: feedback // Feedback from model
         };
 
         // Send the result as the response
@@ -336,11 +372,10 @@ app.post('/api/analyze', async (req, res) => {
     } catch (error) {
         console.error("Unexpected error:", error.message);
         res.status(500).json({
-            error: "Unable to process the request. Please try again later."
+            error: "Failed to generate analysis results."
         });
     }
 });
-
 
 /*
 
