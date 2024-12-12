@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
-const secretKey = 'cV4dNx5Edf&bV7z8qWkL2#mF3C9aT1UvYpH9Xg8J1oZ!7Txz'; 
+const secretKey = process.env.SECRET_KEY; 
 const cors = require('cors')
 const port = 5000;
 const path = require('path');
@@ -13,6 +13,9 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const pdfParse = require('pdf-parse');
 const multer = require('multer');
 const upload = multer();
+const axios = require("axios");
+const { OpenAI } = require("openai");
+
 
 app.use(express.json());
 app.use(cors());
