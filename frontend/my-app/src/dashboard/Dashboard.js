@@ -230,10 +230,11 @@ const getFitScore = async (e) => {
         "job_description": description
     });
     console.log('POST response data:', postResponse.data);
+    console.log(matchedSkills);
     setS(postResponse.data.message);
     setScore(postResponse.data.fit_score);
     setSuggestions(postResponse.data.feedback);
-    setMatchedSkills(postResponse.data.matched_keywords);
+    setMatchedSkills(postResponse.data.missing_keywords);
   } 
 
   catch (err) {

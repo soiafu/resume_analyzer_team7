@@ -463,6 +463,8 @@ app.post('/api/analyze', async (req, res) => {
 
         // Construct the final response format
         const result = {
+            message: "Submitted successfully",
+            status: "success",
             fit_score: fitScore, // Fit score from model
             feedback: feedback, // Feedback from model
             missing_keywords: missingKeywords,
