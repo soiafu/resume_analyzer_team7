@@ -251,7 +251,11 @@ const getFitScore = async (e) => {
           </form>
           <h2 style={styles.sectionTitle}>Or Paste Your Resume to Create a PDF</h2>
           <form id="upload-form" onSubmit={handleUpload}>
-            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)}></textarea>
+            <h2 style={styles.wordcount} >Do not exceed 10,000 characters</h2>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)} onInput={wordCounter}></textarea>
+            <div id="char-count-container">
+                <span id="char-count">{wordCount}</span> / 10,000 characters
+              </div>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
             <button type="submit" label="generate" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
@@ -262,7 +266,7 @@ const getFitScore = async (e) => {
         <div style={styles.containerDescription}>
           <form id="job-form" onSubmit={handleDescription}>
               <h1 style={styles.title}>Enter Your Job Description</h1>
-              <h2 style={styles.wordcount} >Do not exceed 5000 characters</h2>
+              <h2 style={styles.wordcount} >Do not exceed 5,000 characters</h2>
               <textarea onChange={(e) => setDescription(e.target.value)} onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
