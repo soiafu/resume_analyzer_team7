@@ -78,5 +78,10 @@
     "email": "aa@gmail.com",
     "password": "$2b$10$GU3wwrzBNddqorJhaS2c1ezSqiZTZkveec2Y5u1nI0jhuWn2JKlf2",
     "username": "aa"
+  },
+  {
+    "email": "da526@njit.edu",
+    "password": "$2b$10$FYrSXqZE.sgoi2JhkDt2be04gMpfoY0A8slV/TInLf9LCKx3sE5PC",
+    "username": "asdf"
   }
 ]

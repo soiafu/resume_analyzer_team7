@@ -195,8 +195,10 @@ app.post('/api/login', async (req, res) => {
 
 */
 
-var resume_text;
-var job_description;
+var g_resume_text;
+var g_job_description_text;
+
+const JOB_DESCRIPTION_TEXT_LIMIT = 10000;
 
 // RESUME UPLOAD PDF
 app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) => {
@@ -238,7 +240,7 @@ app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) =>
     }
     
     // send text to NLP
-    resume_text = text;
+    g_resume_text = text;
     
     res.status(200).json({
         "message": "Resume uploaded successfully.",
@@ -260,7 +262,7 @@ app.post("/api/job-description", async (req, res) => {
   
     description = description.trim();
     
-    if (description.length > 15000) {
+    if (description.length > JOB_DESCRIPTION_TEXT_LIMIT) {
         return res.status(400).json({
             "error": "Job description exceeds character limit.",
             "status": "error"
@@ -268,7 +270,7 @@ app.post("/api/job-description", async (req, res) => {
     }
   
     // send description to NLP
-    job_description_text = description;
+    g_job_description_text = description;
   
     res.status(200).json({
         "message": "Job description submitted successfully.",
@@ -295,8 +297,8 @@ async function getFitScore(sentences) {
 
     const data = {
         inputs: {
-            source_sentence: resume_text,  // Resume text
-            sentences: [job_description_text]   // Job description text
+            source_sentence: g_resume_text,  // Resume text
+            sentences: [g_job_description_text]   // Job description text
         }
     };
 
@@ -440,24 +442,24 @@ app.post('/api/analyze', async (req, res) => {
         const { resume, job_description } = req.body;
 
         // Validate input
-        if (!resume_text || !job_description_text) {
+        if (!g_resume_text || !g_job_description_text) {
             return res.status(400).json({ error: "Missing resume_text or job_description" });
         }        
 
         // Fetch fit score from Hugging Face model
         console.log("Fetching fit score...");
-        const sentences = [resume_text, job_description_text];
+        const sentences = [g_resume_text, g_job_description_text];
         const fitScoreResponse = await getFitScore(sentences);
         const fitScore = Math.round(fitScoreResponse[0] * 100); // Convert to percentage and round it
 
 
         // Fetch feedback from OpenAI model
         console.log("Fetching feedback...");
-        const feedback = await getFeedback(resume_text, job_description_text);
+        const feedback = await getFeedback(g_resume_text, g_job_description_text);
 
-        const missingKeywords = await getMissingKeywords(resume_text, job_description_text);
+        const missingKeywords = await getMissingKeywords(g_resume_text, g_job_description_text);
 
-        const suggestions = await getSuggestions(resume_text, job_description_text);
+        const suggestions = await getSuggestions(g_resume_text, g_job_description_text);
 
         // Construct the final response format
         const result = {
