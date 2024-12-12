@@ -322,7 +322,17 @@ async function getFeedback(resume_text, job_description) {
             messages: [
                 { 
                     role: "user", 
-                    content: `You are a professional career coach. Provide 3 distinct pieces of constructive feedback for the following resume to align it better with the given job description. Each feedback point should focus on a different aspect of the resume and be brief, no more than 1 sentence per feedback point. Do not number them.
+                    content: `You are a professional career coach. Provide 3 distinct 
+                    pieces of constructive feedback for the following resume to align 
+                    it better with the given job description. Each feedback point should 
+                    focus on a different aspect of the resume and be brief, no more 
+                    than 1 sentence per feedback point. Do not number them. Also provide
+                    the category of the feedback. For example, if your feedback is about
+                    the user's skills or lack thereof, then the category for that feedback
+                    is "Skills". Each piee of feedback should be related to a different
+                    skill. Format your response like so that we can use it in our codebase.
+                    For example: 
+                    "Skill 1": "Feedback 1", "Skill 2": "Feedback 2", "Skill 3": "Feedback3"
 
                     Job Description:
                     ${job_description}
@@ -336,14 +346,19 @@ async function getFeedback(resume_text, job_description) {
         });
         
         const feedbackText = completion.choices[0].message.content;
-
         // Split the feedback into an array of sentences by looking for sentence-ending punctuation
         const feedbackArray = feedbackText
-            .split(/(?<=\.)\s+/)  // Split by period followed by space (end of sentence)
+            .split('\n')  // Split by line
             .map(item => item.trim()) // Trim spaces
             .filter(item => item.length > 0); // Remove empty items
 
-        return feedbackArray; // Return feedback as an array of sentences
+        const feedbackJson = feedbackArray.reduce((acc, item) => {
+            const [key, value] = item.split(/:\s(.+)/);
+            acc[key.trim().replace(/^"|"$/g, '')] = value.replace(/^"|"$/g, ''); // Remove quotes around value
+            return acc;
+          }, {});
+
+        return feedbackJson; // Return feedback as an array of sentences
     } catch (error) {
         console.error("Error generating completion:", error);
         throw new Error("Failed to generate feedback.");
