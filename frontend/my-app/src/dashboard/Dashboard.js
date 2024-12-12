@@ -253,7 +253,7 @@ const getFitScore = async (e) => {
           <form id="upload-form" onSubmit={handleUpload}>
             <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)}></textarea>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
-            <button type="submit" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
+            <button type="submit" label="generate" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
             {success && <div style={{ color: 'green' }}>{success}</div>}
           </form>

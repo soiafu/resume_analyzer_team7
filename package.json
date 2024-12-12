@@ -5,13 +5,11 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
-<<<<<<< HEAD
     "configuration": "^4.1.5",
-=======
     "canvas": "^2.11.2",
->>>>>>> 878f2a69d46add503f926b8589f049eb2b068b5b
     "cors": "^2.8.5",
     "curl": "^0.1.4",
+    "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "form-data": "^4.0.1",
@@ -19,11 +17,8 @@
     "jspdf": "^2.5.2",
     "jwt-decode": "^4.0.0",
     "multer": "^1.4.5-lts.1",
-<<<<<<< HEAD
     "openai": "^4.74.0",
-=======
     "pdf-parse": "^1.1.1",
->>>>>>> 878f2a69d46add503f926b8589f049eb2b068b5b
     "pdfkit": "^0.15.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
@@ -43,6 +38,7 @@
     "@types/jest": "^29.5.14",
     "axios-mock-adapter": "^2.1.0",
     "babel-jest": "^29.7.0",
+    "cypress": "^13.16.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.2.5",

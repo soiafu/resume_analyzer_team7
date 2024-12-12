@@ -6,8 +6,12 @@ const styles = {
       backgroundColor: '#000000',
       backgroundSize: 'cover', 
       backgroundRepeat: 'no-repeat', 
-      height: '150vh', 
+      backgroundPosition: "center", // Centers the background image
+      margin: "0",
+      height: '100%',
+      //height: '150vh', 
       width: '100%', 
+      overflowX: 'auto',
     },
 
     body: {
@@ -107,6 +111,8 @@ const styles = {
     
 
     container: {
+      backgroundSize: 'cover',
+      minHeight: '100vh',
       width: '90%',
       maxWidth: '800px',
       padding: '30px',

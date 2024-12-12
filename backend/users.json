@@ -58,5 +58,15 @@
     "email": "eee@gmail.com",
     "password": "$2b$10$2Mt3gTwryQkGUVOqMI.u3uaoa7O2kPrT6Nq1dlu89s2k2WDbqaiZi",
     "username": "eee"
+  },
+  {
+    "email": "testvalidemail@gmail.com",
+    "password": "$2b$10$LuS/5Q73rnKzEqN6z6wHYuOOcssG9c0S0kKp6gBSKSQhej967Jny6",
+    "username": "testing"
+  },
+  {
+    "email": "email@gmail.com",
+    "password": "$2b$10$aafC.JEBNSI1.PNtbB8Vl.5rUwKzabI/IMRI/Z9vR.jGccwO/SI3u",
+    "username": "testvalidemail"
   }
 ]
