@@ -276,7 +276,7 @@ app.post("/api/job-description", async (req, res) => {
 
 // CALL FIT SCORE MODEL
 async function getFitScore(sentences) {
-    const API_KEY = process.env.HUGGING_FACE_API_KEY;
+    const API_KEY = `${process.env.HUGGING_FACE_API_KEY}`;
     const API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
 
     const headers = {
@@ -302,7 +302,7 @@ async function getFitScore(sentences) {
 
 // CALL FEEDBACK MODEL
 async function getFeedback(resume_text, job_description) {
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const OPENAI_API_KEY = `${process.env.OPENAI_API_KEY}`;
     const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
     try {
@@ -384,30 +384,6 @@ app.post('/api/analyze', async (req, res) => {
 
 */
 
-// MOCK API,, NOT REAL DATA
-app.post('/api/fit-score', async (req, res) => {
-    let text = req.body["resume_text"];
-    let des = req.body ["job_description"];
-    if(text==('') || des==('')){
-        res.status(400).json({
-            "error": "Invalid input data. Both resume and job description are required.",
-            "status": "failure"
-        })
-    }
-    else{
-        res.status(200).json({
-            "message": "Submitted successfully.",
-            "status": "success", 
-            //mock data
-            "fit_score": 85,
-            "feedback": [
-                "Include experience with AWS services.",
-                "Add projects demonstrating REST API development."
-            ], 
-            "matched_keywords": ["Python", "REST APIs", "AWS"]
-        })
-    }
-})
 
 
 /*
