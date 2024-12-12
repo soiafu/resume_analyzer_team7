@@ -153,7 +153,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(404).json({ error: 'Missing username or password'});
     }
 
-    const users = loadUsers();
+    const users = loadUsers(); 
 
     // Validate user credentials
     const user = users.find(user => user.email === email);
@@ -195,71 +195,80 @@ app.post('/api/login', async (req, res) => {
 
 */
 
+var resume_text;
+var job_description;
+
 // RESUME UPLOAD PDF
 app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) => {
     let file = req.file
-    console.log(file)
+    let text = req.body["resume"]
   
-    if (!file) {
+    if (!file && !text) {
         return res.status(400).json({
-            "error": "File not found",
+            "error": "Job description not provided",
             "status": "error"
         })
     }
   
-    if (file.mimetype != "application/pdf") {
-        return res.status(400).json({
-            "error": "Invalid file type. Only PDF files are allowed.",
-            "status": "error"
-        })
+    // if file exists, set text to file contents
+    if (file) {
+        if (file.mimetype != "application/pdf") {
+            return res.status(400).json({
+                "error": "Invalid file type. Only PDF files are allowed.",
+                "status": "error"
+            })
+        }
+        
+        if (file.size > 2000000) {
+            return res.status(400).json({
+                "error": "File is too big",
+                "status": "error"
+            })
+        }
+    
+        try {
+            const resume = await pdfParse(file.buffer)
+            text = resume.text
+        } catch {
+            res.status(500).json({
+                "message": "Error parsing PDF",
+                "status": "error"
+            })
+        }
     }
     
-    if (file.size > 2000000) {
-        return res.status(400).json({
-            "error": "File is too big",
-            "status": "error"
-        })
-    }
-
-  
-    try {
-        const resume = await pdfParse(file.buffer)
-        res.status(200).json({
-            "message": "Resume uploaded successfully.",
-            "status": "success",
-            "text": resume.text,
-        })
-        // send resume to NLP
-
-    } catch {
-        res.status(500).json({
-            "message": "Error parsing PDF",
-            "status": "error"
-        })
-    }
+    // send text to NLP
+    resume_text = text;
+    
+    res.status(200).json({
+        "message": "Resume uploaded successfully.",
+        "status": "success",
+        "text": text
+    })
 });
 
 // RESUME UPLOAD TEXT
 app.post("/api/job-description", async (req, res) => {
-    let resume = req.body["job-description"]
+    let description = req.body["job-description"]
   
-    if (!resume) {
+    if (!description) {
         return res.status(400).json({
             "error": "Job description not provided.",
             "status": "error"
         })
     }
   
-    resume = resume.trim();
+    description = description.trim();
     
-    if (resume.length > 5000) {
+    if (description.length > 15000) {
         return res.status(400).json({
             "error": "Job description exceeds character limit.",
             "status": "error"
         })
     }
   
-    // send resume to NLP
+    // send description to NLP
+    job_description_text = description;
   
     res.status(200).json({
         "message": "Job description submitted successfully.",
@@ -286,8 +295,8 @@ async function getFitScore(sentences) {
 
     const data = {
         inputs: {
-            source_sentence: sentences[0],  // Resume text
-            sentences: sentences.slice(1)   // Job description text
+            source_sentence: resume_text,  // Resume text
+            sentences: [job_description_text]   // Job description text
         }
     };
 
@@ -339,33 +348,123 @@ async function getFeedback(resume_text, job_description) {
     }
 }
 
+async function getMissingKeywords(resume_text, job_description) {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. 
+                        Provide a list of up to 5 keywords that are in the job 
+                        description and not in the resume. List only the keywords, one after the other,
+                        separated by a comma and without numbering or hyphenating. Make sure the keywords
+                        are most relevant to the job description, prioritizing hard skills and 
+                        experience over location and vague terms.
+
+                    Job Description:
+                    ${job_description}
+
+                    Resume:
+                    ${resume_text}
+
+                    Feedback:` 
+                }
+            ]
+        });
+        
+        const content = completion.choices[0].message.content;
+
+        // Split the feedback into an array of sentences by looking for sentence-ending punctuation
+        const contentArray = content
+            .split(", ")  // Split by period followed by space (end of sentence)
+            .map(item => item.trim()) // Trim spaces
+            .filter(item => item.length > 0); // Remove empty items
+
+        return contentArray; // Return feedback as an array of sentences
+    } catch (error) {
+        console.error("Error generating completion:", error);
+        throw new Error("Failed to generate feedback.");
+    }
+}
+
+async function getSuggestions(resume_text, job_description) {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. Provide 3 suggestions
+                    for the following resume to align it better with the 
+                    given job description. Each suggestion should focus on a different aspect 
+                    of the resume and be brief, no more than 1 sentence per feedback point. Do not number them.
+
+                    Job Description:
+                    ${job_description}
+
+                    Resume:
+                    ${resume_text}
+
+                    Feedback:` 
+                }
+            ]
+        });
+        
+        const feedbackText = completion.choices[0].message.content;
+
+        // Split the feedback into an array of sentences by looking for sentence-ending punctuation
+        const feedbackArray = feedbackText
+            .split(/(?<=\.)\s+/)  // Split by period followed by space (end of sentence)
+            .map(item => item.trim()) // Trim spaces
+            .filter(item => item.length > 0); // Remove empty items
+
+        return feedbackArray; // Return feedback as an array of sentences
+    } catch (error) {
+        console.error("Error generating completion:", error);
+        throw new Error("Failed to generate feedback.");
+    }
+}
+
 //ANALYZE RESUME AND JOB DESC
 app.post('/api/analyze', async (req, res) => {
     
     try {
         // Extract resume and job description from the request body
-        const { resume_text, job_description } = req.body;
+        const { resume, job_description } = req.body;
 
         // Validate input
-        if (!resume_text || !job_description) {
+        if (!resume_text || !job_description_text) {
             return res.status(400).json({ error: "Missing resume_text or job_description" });
         }        
 
         // Fetch fit score from Hugging Face model
         console.log("Fetching fit score...");
-        const sentences = [resume_text, job_description];
+        const sentences = [resume_text, job_description_text];
         const fitScoreResponse = await getFitScore(sentences);
         const fitScore = Math.round(fitScoreResponse[0] * 100); // Convert to percentage and round it
 
 
         // Fetch feedback from OpenAI model
         console.log("Fetching feedback...");
-        const feedback = await getFeedback(resume_text, job_description);
+        const feedback = await getFeedback(resume_text, job_description_text);
+
+        const missingKeywords = await getMissingKeywords(resume_text, job_description_text);
+
+        const suggestions = await getSuggestions(resume_text, job_description_text);
 
         // Construct the final response format
         const result = {
             fit_score: fitScore, // Fit score from model
-            feedback: feedback // Feedback from model
+            feedback: feedback, // Feedback from model
+            missing_keywords: missingKeywords,
+            suggestions: suggestions
         };
 
         // Send the result as the response
