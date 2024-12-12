@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
-const secretKey = process.env.SECRET_KEY; 
+const secretKey = `${process.env.JWT_SECRET_KEY}`; 
 const cors = require('cors')
 const port = 5000;
 const path = require('path');
@@ -497,11 +497,11 @@ app.post('/api/fit-score', async (req, res) => {
         res.status(200).json({
             "message": "Submitted successfully.",
             "status": "success", 
-            //mock data
             "fit_score": 85,
             "feedback": [
-                "Include experience with AWS services.",
-                "Add projects demonstrating REST API development."
+                { "category": "skills", "text": "Include experience with AWS services." },
+                { "category": "experience", "text": "Add projects demonstrating REST API development." },
+                { "category": "formatting", "text": "Ensure consistent formatting across sections." }
             ], 
             "matched_keywords": ["Python", "REST APIs", "AWS"]
         })
