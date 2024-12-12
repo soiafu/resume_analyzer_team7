@@ -12,7 +12,7 @@ Make sure you have Node.js installed. Then run:
 This will install all the required packages.
 
 **Set Up Environment Variables**  
-Create a .env file in the root directory and configure any required environment variables. 
+Create a .env file in the root directory and configure any required environment variables. Contact Sofia Usmani (su22@njit.edu) for credentials. 
 
 **Run the Development Server**  
 First, run the backend server: backend/index.js  

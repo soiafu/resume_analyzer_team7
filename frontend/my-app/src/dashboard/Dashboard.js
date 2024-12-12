@@ -207,7 +207,8 @@ const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
 const [matchedSkills, setMatchedSkills] = useState('');
-const [suggestions, setSuggestions] = useState('');
+const [suggestions, setSuggestions] = useState([]);
+const [filter, setFilter] = useState("all");
 
 const getFitScore = async (e) => {
   e.preventDefault();
@@ -236,6 +237,10 @@ const getFitScore = async (e) => {
   }
 }
 
+const filteredSuggestions = suggestions.filter((suggestion) =>
+  filter === "all" ? true : suggestion.category === filter
+);
+
 
   return(
   <div style={styles.background}>
@@ -251,9 +256,13 @@ const getFitScore = async (e) => {
           </form>
           <h2 style={styles.sectionTitle}>Or Paste Your Resume to Create a PDF</h2>
           <form id="upload-form" onSubmit={handleUpload}>
-            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)}></textarea>
+            <h2 style={styles.wordcount} >Do not exceed 10,000 characters</h2>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)} onInput={wordCounter}></textarea>
+            <div id="char-count-container">
+                <span id="char-count">{wordCount}</span> / 10,000 characters
+              </div>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
-            <button type="submit" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
+            <button type="submit" label="generate" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
             {error && <p style={styles.error}>{error}</p>}
             {success && <div style={{ color: 'green' }}>{success}</div>}
           </form>
@@ -262,7 +271,7 @@ const getFitScore = async (e) => {
         <div style={styles.containerDescription}>
           <form id="job-form" onSubmit={handleDescription}>
               <h1 style={styles.title}>Enter Your Job Description</h1>
-              <h2 style={styles.wordcount} >Do not exceed 5000 characters</h2>
+              <h2 style={styles.wordcount} >Do not exceed 5,000 characters</h2>
               <textarea onChange={(e) => setDescription(e.target.value)} onInput={wordCounter} id="job-description" name="job-description" rows="6" cols="50" placeholder="Paste the job description here..."></textarea>
               <div id="char-count-container">
                 <span id="char-count">{wordCount}</span> / 5000 characters
@@ -315,17 +324,23 @@ const getFitScore = async (e) => {
 
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>Improvement Suggestions</h2>
-          {suggestions.length > 0 ? (
-            <ListGroup>
-              {suggestions.map((suggestion, index) => (
-                <ListGroupItem key={index} style={styles.listItem}>
-                  {suggestion}
-                </ListGroupItem>
-              ))}
-            </ListGroup>
-          ) : (
-            <p>See where you need improvement.</p>
-          )}
+          <select onChange={(e) => setFilter(e.target.value)} style={styles.select}>
+            <option value="all">All</option>
+            <option value="skills">Skills</option>
+            <option value="experience">Experience</option>
+            <option value="formatting">Formatting</option>
+          </select>
+          {filteredSuggestions.length > 0 ? (
+        <ListGroup>
+          {filteredSuggestions.map((suggestion, index) => (
+            <ListGroupItem key={index} style={styles.listItem}>
+              {suggestion.text}
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      ) : (
+        <p>No suggestions available for the selected category.</p>
+      )}
         </div>
         {pdfError && <p style={styles.error}>{pdfError}</p>}
         <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
