@@ -5,8 +5,8 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
-    "configuration": "^4.1.5",
     "canvas": "^2.11.2",
+    "configuration": "^4.1.5",
     "cors": "^2.8.5",
     "curl": "^0.1.4",
     "cypress-file-upload": "^5.0.8",
@@ -25,6 +25,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
+    "tmpl": "^1.0.5",
     "uploads": "^0.0.1",
     "util": "^0.12.5"
   },
