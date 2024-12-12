@@ -437,7 +437,8 @@ app.post('/api/analyze', async (req, res) => {
     
     try {
         // Extract resume and job description from the request body
-        const { resume, job_description } = req.body;
+        let resume_text = req.body["resume_text"];
+        let job_descriptions = req.body ["job_description"];
 
         // Validate input
         if (!resume_text || !job_description_text) {
@@ -459,16 +460,15 @@ app.post('/api/analyze', async (req, res) => {
 
         const suggestions = await getSuggestions(resume_text, job_description_text);
 
-        // Construct the final response format
-        const result = {
-            fit_score: fitScore, // Fit score from model
-            feedback: feedback, // Feedback from model
-            missing_keywords: missingKeywords,
-            suggestions: suggestions
-        };
-
         // Send the result as the response
-        res.status(200).json(result);
+        res.status(200).json({
+            "message": "Submitted successfully.",
+            "status": "success", 
+            "fit_score": fitScore,
+            "feedback": feedback, 
+            "missing_keywords": missingKeywords,
+            "suggestions": suggestions
+        });
     } catch (error) {
         console.error("Unexpected error:", error.message);
         res.status(500).json({
