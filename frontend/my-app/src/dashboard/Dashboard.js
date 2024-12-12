@@ -216,7 +216,7 @@ const getFitScore = async (e) => {
   setScore('');
   
   try {
-    const postResponse = await axios.post('http://localhost:5000/api/fit-score', {
+    const postResponse = await axios.post('http://localhost:5000/api/analyze', {
         "resume_text": resumeContent,
         "job_description": description
     });
