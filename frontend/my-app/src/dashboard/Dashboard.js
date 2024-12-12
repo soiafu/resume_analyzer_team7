@@ -207,7 +207,8 @@ const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
 const [matchedSkills, setMatchedSkills] = useState('');
-const [suggestions, setSuggestions] = useState('');
+const [suggestions, setSuggestions] = useState([]);
+const [filter, setFilter] = useState("all");
 
 const getFitScore = async (e) => {
   e.preventDefault();
@@ -235,6 +236,10 @@ const getFitScore = async (e) => {
     } 
   }
 }
+
+const filteredSuggestions = suggestions.filter((suggestion) =>
+  filter === "all" ? true : suggestion.category === filter
+);
 
 
   return(
@@ -319,17 +324,23 @@ const getFitScore = async (e) => {
 
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>Improvement Suggestions</h2>
-          {suggestions.length > 0 ? (
-            <ListGroup>
-              {suggestions.map((suggestion, index) => (
-                <ListGroupItem key={index} style={styles.listItem}>
-                  {suggestion}
-                </ListGroupItem>
-              ))}
-            </ListGroup>
-          ) : (
-            <p>See where you need improvement.</p>
-          )}
+          <select onChange={(e) => setFilter(e.target.value)} style={styles.select}>
+            <option value="all">All</option>
+            <option value="skills">Skills</option>
+            <option value="experience">Experience</option>
+            <option value="formatting">Formatting</option>
+          </select>
+          {filteredSuggestions.length > 0 ? (
+        <ListGroup>
+          {filteredSuggestions.map((suggestion, index) => (
+            <ListGroupItem key={index} style={styles.listItem}>
+              {suggestion.text}
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      ) : (
+        <p>No suggestions available for the selected category.</p>
+      )}
         </div>
         {pdfError && <p style={styles.error}>{pdfError}</p>}
         <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>

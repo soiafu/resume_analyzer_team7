@@ -398,11 +398,11 @@ app.post('/api/fit-score', async (req, res) => {
         res.status(200).json({
             "message": "Submitted successfully.",
             "status": "success", 
-            //mock data
             "fit_score": 85,
             "feedback": [
-                "Include experience with AWS services.",
-                "Add projects demonstrating REST API development."
+                { "category": "skills", "text": "Include experience with AWS services." },
+                { "category": "experience", "text": "Add projects demonstrating REST API development." },
+                { "category": "formatting", "text": "Ensure consistent formatting across sections." }
             ], 
             "matched_keywords": ["Python", "REST APIs", "AWS"]
         })
