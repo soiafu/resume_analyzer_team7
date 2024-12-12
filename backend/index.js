@@ -384,30 +384,6 @@ app.post('/api/analyze', async (req, res) => {
 
 */
 
-// MOCK API,, NOT REAL DATA
-app.post('/api/fit-score', async (req, res) => {
-    let text = req.body["resume_text"];
-    let des = req.body ["job_description"];
-    if(text==('') || des==('')){
-        res.status(400).json({
-            "error": "Invalid input data. Both resume and job description are required.",
-            "status": "failure"
-        })
-    }
-    else{
-        res.status(200).json({
-            "message": "Submitted successfully.",
-            "status": "success", 
-            "fit_score": 85,
-            "feedback": [
-                { "category": "skills", "text": "Include experience with AWS services." },
-                { "category": "experience", "text": "Add projects demonstrating REST API development." },
-                { "category": "formatting", "text": "Ensure consistent formatting across sections." }
-            ], 
-            "matched_keywords": ["Python", "REST APIs", "AWS"]
-        })
-    }
-})
 
 
 /*

@@ -149,6 +149,14 @@ const Dashboard = () => {
     setWordCount(count);
   }
 
+  const [letterCount, setLetterCount] = useState(0);
+  const letterCounter = (event) => {
+    setLetterCount(0);
+    const text = event.target.value;
+    const count = text.replace(/\s/g, '').length;
+    setLetterCount(count);
+  }
+
 // if user pastes resume
 function makePDF(text) {
     if (text==''){
@@ -217,7 +225,7 @@ const getFitScore = async (e) => {
   setScore('');
   
   try {
-    const postResponse = await axios.post('http://localhost:5000/api/fit-score', {
+    const postResponse = await axios.post('http://localhost:5000/api/analyze', {
         "resume_text": resumeContent,
         "job_description": description
     });
@@ -257,9 +265,9 @@ const filteredSuggestions = suggestions.filter((suggestion) =>
           <h2 style={styles.sectionTitle}>Or Paste Your Resume to Create a PDF</h2>
           <form id="upload-form" onSubmit={handleUpload}>
             <h2 style={styles.wordcount} >Do not exceed 10,000 characters</h2>
-            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)} onInput={wordCounter}></textarea>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Paste the resume here..." onChange={(e) => setInput(e.target.value)} onInput={letterCounter}></textarea>
             <div id="char-count-container">
-                <span id="char-count">{wordCount}</span> / 10,000 characters
+                <span id="char-count">{letterCount}</span> / 10,000 characters
               </div>
             {uploadLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
             <button type="submit" label="generate" style={styles.button} onClick={(e) => setPDF(makePDF(resInput))}>Generate PDF</button>
