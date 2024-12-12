@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
-const secretKey = process.env.SECRET_KEY; 
+const secretKey = `${process.env.JWT_SECRET_KEY}`; 
 const cors = require('cors')
 const port = 5000;
 const path = require('path');
@@ -19,6 +19,12 @@ const { OpenAI } = require("openai");
 
 app.use(express.json());
 app.use(cors());
+
+/*
+
+----------------------------- Token Handling  -----------------------------------
+
+*/
 
 // TOKEN STORAGE
 const tokensFile = path.resolve(__dirname, 'tokens.json');
@@ -39,6 +45,38 @@ function saveTokens(tokens) {
     }
 }
 
+// VALIDATE TOKEN API
+app.post('/api/isValidToken', (req, res) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ error: 'Token is required' });
+    }
+
+    try {
+        // Verify the token using JWT
+        const decoded = jwt.verify(token, secretKey);
+
+        // Check if the token exists in tokens.json
+        const tokens = loadTokens();
+        const tokenExists = tokens.some(storedToken => storedToken.token === token);
+
+        if (!tokenExists) {
+            return res.status(401).json({ error: 'Invalid Token' });
+        }
+
+        res.status(200).json({ message: 'Token is valid', user: decoded });
+    } catch (error) {
+        console.error('Token validation error:', error);
+        res.status(401).json({ error: 'Invalid Token' });
+    }
+});
+
+/*
+
+----------------------------- User Handling  -----------------------------------
+
+*/
 // USER STORAGE
 const usersFile = path.resolve(__dirname, 'users.json');if (!fs.existsSync(usersFile)) {
     fs.writeFileSync(usersFile, JSON.stringify([]));
@@ -56,6 +94,12 @@ function saveUsers(users) {
         console.error("Error saving users:", error);
     }
 }
+
+/*
+
+----------------------------- Registration / Sign-up  -----------------------------------
+
+*/
 
 // REGISTER API 
 app.post('/api/register', async (req, res) => {
@@ -96,7 +140,11 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+/*
 
+----------------------------- Login  -----------------------------------
+
+*/
 // LOGIN API
 app.post('/api/login', async (req, res) => {
     const {email, password} = req.body;
@@ -140,33 +188,12 @@ app.post('/api/login', async (req, res) => {
 
 });
 
-// VALIDATE TOKEN API
-app.post('/api/isValidToken', (req, res) => {
-    const { token } = req.body;
 
-    if (!token) {
-        return res.status(400).json({ error: 'Token is required' });
-    }
+/*
 
-    try {
-        // Verify the token using JWT
-        const decoded = jwt.verify(token, secretKey);
+----------------------------- Resume Uploading  -----------------------------------
 
-        // Check if the token exists in tokens.json
-        const tokens = loadTokens();
-        const tokenExists = tokens.some(storedToken => storedToken.token === token);
-
-        if (!tokenExists) {
-            return res.status(401).json({ error: 'Invalid Token' });
-        }
-
-        res.status(200).json({ message: 'Token is valid', user: decoded });
-    } catch (error) {
-        console.error('Token validation error:', error);
-        res.status(401).json({ error: 'Invalid Token' });
-    }
-});
-
+*/
 
 // RESUME UPLOAD PDF
 app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) => {
@@ -240,24 +267,133 @@ app.post("/api/job-description", async (req, res) => {
     })
 })
 
-// Start the server (only if not in test mode)
-if (process.env.NODE_ENV !== 'test') {
-    app.listen(port, () => {
-        console.log(`Server running at http://localhost:${port}`);
-    });
+
+/*
+
+----------------------------- NLP API  -----------------------------------
+
+*/
+
+// CALL FIT SCORE MODEL
+async function getFitScore(sentences) {
+    const API_KEY = process.env.HUGGING_FACE_API_KEY;
+    const API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
+
+    const headers = {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
+    };
+
+    const data = {
+        inputs: {
+            source_sentence: sentences[0],  // Resume text
+            sentences: sentences.slice(1)   // Job description text
+        }
+    };
+
+    try {
+        const response = await axios.post(API_URL, data, { headers });
+        return response.data;
+    } catch (error) {
+        console.error("Error calling Hugging Face API:", error.response ? error.response.data : error.message);
+        throw new Error("Failed to process request.");
+    }
 }
 
+// CALL FEEDBACK MODEL
+async function getFeedback(resume_text, job_description) {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. Provide 3 distinct pieces of constructive feedback for the following resume to align it better with the given job description. Each feedback point should focus on a different aspect of the resume and be brief, no more than 1 sentence per feedback point. Do not number them.
+
+                    Job Description:
+                    ${job_description}
+
+                    Resume:
+                    ${resume_text}
+
+                    Feedback:` 
+                }
+            ]
+        });
+        
+        const feedbackText = completion.choices[0].message.content;
+
+        // Split the feedback into an array of sentences by looking for sentence-ending punctuation
+        const feedbackArray = feedbackText
+            .split(/(?<=\.)\s+/)  // Split by period followed by space (end of sentence)
+            .map(item => item.trim()) // Trim spaces
+            .filter(item => item.length > 0); // Remove empty items
+
+        return feedbackArray; // Return feedback as an array of sentences
+    } catch (error) {
+        console.error("Error generating completion:", error);
+        throw new Error("Failed to generate feedback.");
+    }
+}
+
+//ANALYZE RESUME AND JOB DESC
+app.post('/api/analyze', async (req, res) => {
+    
+    try {
+        // Extract resume and job description from the request body
+        const { resume_text, job_description } = req.body;
+
+        // Validate input
+        if (!resume_text || !job_description) {
+            return res.status(400).json({ error: "Missing resume_text or job_description" });
+        }        
+
+        // Fetch fit score from Hugging Face model
+        console.log("Fetching fit score...");
+        const sentences = [resume_text, job_description];
+        const fitScoreResponse = await getFitScore(sentences);
+        const fitScore = Math.round(fitScoreResponse[0] * 100); // Convert to percentage and round it
+
+
+        // Fetch feedback from OpenAI model
+        console.log("Fetching feedback...");
+        const feedback = await getFeedback(resume_text, job_description);
+
+        // Construct the final response format
+        const result = {
+            fit_score: fitScore, // Fit score from model
+            feedback: feedback // Feedback from model
+        };
+
+        // Send the result as the response
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Unexpected error:", error.message);
+        res.status(500).json({
+            error: "Failed to generate analysis results."
+        });
+    }
+});
+
+/*
+
+-----------------------------   -----------------------------------
+
+*/
+
+// MOCK API,, NOT REAL DATA
 app.post('/api/fit-score', async (req, res) => {
     let text = req.body["resume_text"];
     let des = req.body ["job_description"];
-
     if(text==('') || des==('')){
         res.status(400).json({
             "error": "Invalid input data. Both resume and job description are required.",
             "status": "failure"
         })
     }
-
     else{
         res.status(200).json({
             "message": "Submitted successfully.",
@@ -272,5 +408,19 @@ app.post('/api/fit-score', async (req, res) => {
         })
     }
 })
+
+
+/*
+
+----------------------------- START APP  -----------------------------------
+
+*/
+
+// Start the server (only if not in test mode)
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
+}
 
 module.exports = app; // Export the app for testing
