@@ -276,7 +276,7 @@ app.post("/api/job-description", async (req, res) => {
 
 // CALL FIT SCORE MODEL
 async function getFitScore(sentences) {
-    const API_KEY = `${process.env.HUGGING_FACE_API_KEY}`;
+    const API_KEY = process.env.HUGGING_FACE_API_KEY;
     const API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
 
     const headers = {
@@ -302,7 +302,7 @@ async function getFitScore(sentences) {
 
 // CALL FEEDBACK MODEL
 async function getFeedback(resume_text, job_description) {
-    const OPENAI_API_KEY = `${process.env.OPENAI_API_KEY}`;
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
     const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
     try {
