@@ -172,9 +172,9 @@ function makePDF(text) {
 
 const [pdfError, setPdfError] = useState('');
 //for user to download the resume
-function generatePDF(fitScore, matchedKeywords, feedback) {
+function generatePDF(fitScore, missingSkills, feedback) {
   setPdfError('')
-  if(fitScore==('') || matchedKeywords==('') || feedback==('')){
+  if(fitScore==('') || missingSkills==('') || feedback==('')){
     setPdfError('Must Get Results Before Downloading')
     return
   }
@@ -189,12 +189,12 @@ function generatePDF(fitScore, matchedKeywords, feedback) {
   doc.setFillColor(200, 200, 200);
   doc.rect(10, 50, 190, 10, "F");
   doc.setFont("helvetica", "bold");
-  doc.text("Matched Keywords:", 10, 57);
+  doc.text("Missing Skills and Keywords:", 10, 57);
   doc.setFont("helvetica", "normal");
-  matchedKeywords.forEach((keyword, index) => {
+  missingSkills.forEach((keyword, index) => {
     doc.text(`- ${keyword}`, 15, 65 + index * 10);
   });
-  const feedbackStartY = 65 + matchedKeywords.length * 10 + 10;
+  const feedbackStartY = 65 + missingSkills.length * 10 + 10;
   doc.setFillColor(200, 200, 200);
   doc.rect(10, feedbackStartY - 7, 190, 10, "F");
   doc.setFont("helvetica", "bold");
@@ -214,7 +214,7 @@ const [er, setE] = useState('');
 const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
-const [matchedSkills, setMatchedSkills] = useState('');
+const [missingSkills, setMissingSkills] = useState('');
 const [suggestions, setSuggestions] = useState(['', '', '']);
 const [filter, setFilter] = useState("all");
 const [feedback, setFeedback] = useState();
@@ -237,7 +237,7 @@ const getFitScore = async (e) => {
     setSuggestions(postResponse.data.suggestions);
     console.log("This is the suggestions frontend:", suggestions);
     console.log(Array.isArray(postResponse.data.suggestions) ? 'This is an array suggestions from backend:' : 'This is not an array suggestions from backend:', postResponse.data.suggestions);
-    setMatchedSkills(postResponse.data.missing_keywords);
+    setMissingSkills(postResponse.data.missing_keywords);
   } 
 
   catch (err) {
@@ -341,9 +341,9 @@ const filteredSuggestions = (() => {
         
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>Missing Skills and Keywords</h2>
-          {matchedSkills.length > 0 ? (
+          {missingSkills.length > 0 ? (
             <ListGroup>
-              {matchedSkills.map((skill, index) => (
+              {missingSkills.map((skill, index) => (
                 <ListGroupItem key={index} style={styles.listItem}>
                   {skill}
                 </ListGroupItem>
@@ -377,7 +377,7 @@ const filteredSuggestions = (() => {
       </div>
 
         {pdfError && <p style={styles.error}>{pdfError}</p>}
-        <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
+        <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, missingSkills, suggestions)}>
           Download PDF Report
         </button>
       </div>
