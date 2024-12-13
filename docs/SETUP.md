@@ -32,7 +32,8 @@ Start the React development server with:
 The app will run at http://localhost:3000 by default.
 
 **Run Tests** (optional)  
-Navigate to the tests directory: tests
+Open a new terminal and navigate to the tests directory: 
+<pre> cd resume_analyzer_team7\tests </pre>
 
 You can run the backend tests using:
 <pre> npm test </pre>  
