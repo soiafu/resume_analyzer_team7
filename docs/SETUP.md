@@ -16,7 +16,7 @@ Create a .env file in the root directory and configure any required environment 
 
 **Run the Development Server**  
 First, go to the backend directory: 
-<pre> cd backend </pre>pre>
+<pre> cd backend </pre>
 Install the required packages:
 <pre> npm install </pre>
 Run the backend server from the terminal: 
