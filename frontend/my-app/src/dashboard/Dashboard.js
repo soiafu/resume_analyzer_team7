@@ -173,6 +173,7 @@ function makePDF(text) {
 const [pdfError, setPdfError] = useState('');
 //for user to download the resume
 function generatePDF(fitScore, missingSkills, feedback) {
+  console.log("this is the feedback:", feedback)
   setPdfError('')
   if(fitScore==('') || missingSkills==('') || feedback==('')){
     setPdfError('Must Get Results Before Downloading')
@@ -200,9 +201,26 @@ function generatePDF(fitScore, missingSkills, feedback) {
   doc.setFont("helvetica", "bold");
   doc.text("Feedback:", 10, feedbackStartY);
   doc.setFont("helvetica", "normal");
-  feedback.forEach((item, index) => {
-    doc.text(`- ${item}`, 15, feedbackStartY + 10 + index * 10);
-  });
+
+  
+  const maxWidth = 180; // Adjust width for margins
+let y = feedbackStartY + 10; // Start position for feedback
+const lineHeight = 10; // Spacing between lines
+const pageHeight = 280; // Approx height for content in A4 (leaving bottom margin)
+
+feedback.forEach((item) => {
+    const lines = doc.splitTextToSize(`${item}`, maxWidth); // Wrap text within maxWidth
+    
+    lines.forEach((line) => {
+        if (y + lineHeight > pageHeight) {
+            doc.addPage(); // Add new page if content exceeds the current page height
+            y = 10; // Reset y position for new page
+        }
+        doc.text(line, 15, y); // Render the line at current position
+        y += lineHeight; // Increment y for next line
+    });
+});
+
   doc.setFontSize(10);
   doc.text("Page 1", 105, 290, { align: "center" });
   doc.save("Resume_Analysis_Report.pdf");
