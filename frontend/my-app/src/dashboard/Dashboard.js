@@ -78,7 +78,7 @@ const Dashboard = () => {
       formData.append('resume_file', pdf); 
       const postResponse = await axios.post('http://localhost:5000/api/resume-upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Ensure that the content type is set to multipart/form-data
+          'Content-Type': 'multipart/form-data', 
         },
       });
       setUploadLoading(false);
@@ -215,8 +215,9 @@ const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
 const [matchedSkills, setMatchedSkills] = useState('');
-const [suggestions, setSuggestions] = useState([]);
+const [suggestions, setSuggestions] = useState(['', '', '']);
 const [filter, setFilter] = useState("all");
+const [feedback, setFeedback] = useState();
 
 const getFitScore = async (e) => {
   e.preventDefault();
@@ -232,7 +233,10 @@ const getFitScore = async (e) => {
     console.log('POST response data:', postResponse.data);
     setS(postResponse.data.message);
     setScore(postResponse.data.fit_score);
-    setSuggestions(postResponse.data.feedback);
+    setFeedback(postResponse.data.feedback);
+    setSuggestions(postResponse.data.suggestions);
+    console.log("This is the suggestions frontend:", suggestions);
+    console.log(Array.isArray(postResponse.data.suggestions) ? 'This is an array suggestions from backend:' : 'This is not an array suggestions from backend:', postResponse.data.suggestions);
     setMatchedSkills(postResponse.data.missing_keywords);
   } 
 
@@ -245,10 +249,30 @@ const getFitScore = async (e) => {
   }
 }
 
+/*
 const filteredSuggestions = suggestions.filter((suggestion) =>
   filter === "all" ? true : suggestion.category === filter
 );
+*/
 
+const filteredSuggestions = (() => {
+  if (filter === "All") {
+    console.log("On all");
+    console.log("The feedback is: ", suggestions);
+    return suggestions;  // Show all suggestions if "all" is selected
+  }
+  if (filter === "Skills") {
+    console.log("The feedback is: ", suggestions[0]);
+    return [suggestions[0]];  // Show only the first suggestion for "skills"
+  }
+  if (filter === "Experience") {
+    return [suggestions[1]];  // Show only the second suggestion for "experience"
+  }
+  if (filter === "Formatting") {
+    return [suggestions[2]];  // Show only the third suggestion for "formatting"
+  }
+  return [];  // Default to empty if no valid filter is selected
+})();
 
   return(
   <div style={styles.background}>
@@ -316,7 +340,7 @@ const filteredSuggestions = suggestions.filter((suggestion) =>
         </div>
         
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>Skills and Keywords Matched</h2>
+          <h2 style={styles.sectionTitle}>Missing Skills and Keywords</h2>
           {matchedSkills.length > 0 ? (
             <ListGroup>
               {matchedSkills.map((skill, index) => (
@@ -329,27 +353,29 @@ const filteredSuggestions = suggestions.filter((suggestion) =>
             <p>Find out what skills match your job requirements.</p>
           )}
         </div>
-
+        
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>Improvement Suggestions</h2>
-          <select onChange={(e) => setFilter(e.target.value)} style={styles.select}>
-            <option value="all">All</option>
-            <option value="skills">Skills</option>
-            <option value="experience">Experience</option>
-            <option value="formatting">Formatting</option>
-          </select>
-          {filteredSuggestions.length > 0 ? (
-        <ListGroup>
-          {filteredSuggestions.map((suggestion, index) => (
-            <ListGroupItem key={index} style={styles.listItem}>
-              {suggestion.text}
-            </ListGroupItem>
-          ))}
-        </ListGroup>
-      ) : (
-        <p>No suggestions available for the selected category.</p>
-      )}
-        </div>
+        <h2 style={styles.sectionTitle}>Improvement Suggestions</h2>
+        <select onChange={(e) => setFilter(e.target.value)} style={styles.select}>
+          <option value="All">All</option>
+          <option value="Skills">Skills</option>
+          <option value="Experience">Experience</option>
+          <option value="Formatting">Formatting</option>
+        </select>
+
+        {filteredSuggestions.length > 0 ? (
+          <ListGroup>
+            {filteredSuggestions.map((suggestion, index) => (
+              <ListGroupItem key={index} style={styles.listItem}>
+                {suggestion}
+              </ListGroupItem>
+            ))}
+          </ListGroup>
+        ) : (
+          <p>No suggestions available for the selected category.</p>
+        )}
+      </div>
+
         {pdfError && <p style={styles.error}>{pdfError}</p>}
         <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, matchedSkills, suggestions)}>
           Download PDF Report
