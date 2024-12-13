@@ -477,6 +477,8 @@ app.post('/api/analyze', async (req, res) => {
 
         const suggestions = await getSuggestions(g_resume_text, g_job_description_text);
 
+        //console.log("Data feedback type: ", Array.isArray(suggestions)); -> suggestions is an array
+
         // Send the result as the response
         res.status(200).json({
             "message": "Submitted successfully.",
@@ -486,6 +488,7 @@ app.post('/api/analyze', async (req, res) => {
             "missing_keywords": missingKeywords,
             "suggestions": suggestions
         });
+        
     } catch (error) {
         console.error("Unexpected error:", error.message);
         res.status(500).json({
