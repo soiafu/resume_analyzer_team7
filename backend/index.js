@@ -461,11 +461,9 @@ async function getSuggestions(resume_text, job_description) {
             messages: [
                 { 
                     role: "user", 
-                    content: `You are a professional career coach. Provide 3 suggestions
-                    for the following resume to align it better with the 
-                    given job description. The first suggestion should be what skills are needed. The second should be what experiences should be added. 
-                    The last should be how the format of the resume can be better.
-                    Each suggestion should be brief, no more than 1 sentence per feedback point. Do not number or add labels to the categories.
+                    content: `You are a professional career coach looking at the following resume to align it better with the 
+                    given job description. Give a suggestion on what skills are needed Give a suggestion on what experiences should be added. Give a suggestion on how the format of the resume can be better.
+                   There should be a total of 3 brief suggestions, no more than 1 sentence per suggestion. Do not number or add labels to the categories.
 
                     Job Description:
                     ${job_description}

@@ -272,8 +272,6 @@ const filteredSuggestions = suggestions.filter((suggestion) =>
 
 const filteredSuggestions = (() => {
   if (filter === "All") {
-    console.log("On all");
-    console.log("The feedback is: ", suggestions);
     return suggestions;  // Show all suggestions if "all" is selected
   }
   if (filter === "Skills") {
