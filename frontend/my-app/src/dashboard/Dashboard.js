@@ -262,22 +262,23 @@ const getFitScore = async (e) => {
   setScore('');
   
   try {
-    setResultsLoading('true');
+    setResultsLoading(true);
     const postResponse = await axios.post('http://localhost:5000/api/analyze', {
         "resume_text": resumeContent,
         "job_description": description
     });
-    setResultsLoading('false');
+    
     setS(postResponse.data.message);
     setScore(postResponse.data.fit_score);
     setFeedback(postResponse.data.feedback);
     setSuggestions(postResponse.data.suggestions);
     setMissingSkills(postResponse.data.missing_keywords);
     setMatchedSkills(postResponse.data.matched_keywords);
+    setResultsLoading(false);
   } 
 
   catch (err) {
-    setResultsLoading('false');
+    setResultsLoading(false);
     if (err.response) {
       setDescLoading(false);
       console.log('Backend error message:', err.response.data.message);
@@ -300,7 +301,7 @@ const filteredSuggestions = (() => {
   if (filter === "Formatting") {
     return [suggestions[2]];  // Show only the third suggestion for "formatting"
   }
-  return [];  // Default to empty if no valid filter is selected
+  return suggestions;  // Default to empty if no valid filter is selected
 })();
 
   return(
