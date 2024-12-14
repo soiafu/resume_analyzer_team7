@@ -201,32 +201,28 @@ function generatePDF(fitScore, missingSkills, feedback) {
   doc.setFont("helvetica", "bold");
   doc.text("Feedback:", 10, feedbackStartY);
   doc.setFont("helvetica", "normal");
-
-  
   const maxWidth = 180; // Adjust width for margins
-let y = feedbackStartY + 10; // Start position for feedback
-const lineHeight = 10; // Spacing between lines
-const pageHeight = 280; // Approx height for content in A4 (leaving bottom margin)
+  let y = feedbackStartY + 10; // Start position for feedback
+  const lineHeight = 10; // Spacing between lines
+  const pageHeight = 280; // Approx height for content in A4 (leaving bottom margin)
 
-feedback.forEach((item) => {
-    const lines = doc.splitTextToSize(`${item}`, maxWidth); // Wrap text within maxWidth
-    
-    lines.forEach((line) => {
-        if (y + lineHeight > pageHeight) {
-            doc.addPage(); // Add new page if content exceeds the current page height
-            y = 10; // Reset y position for new page
-        }
-        doc.text(line, 15, y); // Render the line at current position
-        y += lineHeight; // Increment y for next line
-    });
-});
+  feedback.forEach((item) => {
+      const lines = doc.splitTextToSize(`${item}`, maxWidth); // Wrap text within maxWidth
+      
+      lines.forEach((line) => {
+          if (y + lineHeight > pageHeight) {
+              doc.addPage(); // Add new page if content exceeds the current page height
+              y = 10; // Reset y position for new page
+          }
+          doc.text(line, 15, y); // Render the line at current position
+          y += lineHeight; // Increment y for next line
+      });
+  });
+    doc.setFontSize(10);
+    doc.text("Page 1", 105, 290, { align: "center" });
+    doc.save("Resume_Analysis_Report.pdf");
 
-
-  doc.setFontSize(10);
-  doc.text("Page 1", 105, 290, { align: "center" });
-  doc.save("Resume_Analysis_Report.pdf");
-
-}
+  }
 
 
 const [er, setE] = useState('');
@@ -234,6 +230,7 @@ const [s, setS] = useState('');
 const [resInput, setInput] = useState('');
 const [fitScore, setScore] = useState('');
 const [missingSkills, setMissingSkills] = useState('');
+const [matchedSkills, setMatchedSkills] = useState('');
 const [suggestions, setSuggestions] = useState(['', '', '']);
 const [filter, setFilter] = useState("all");
 const [feedback, setFeedback] = useState();
@@ -254,9 +251,8 @@ const getFitScore = async (e) => {
     setScore(postResponse.data.fit_score);
     setFeedback(postResponse.data.feedback);
     setSuggestions(postResponse.data.suggestions);
-    console.log("This is the suggestions frontend:", suggestions);
-    console.log(Array.isArray(postResponse.data.suggestions) ? 'This is an array suggestions from backend:' : 'This is not an array suggestions from backend:', postResponse.data.suggestions);
     setMissingSkills(postResponse.data.missing_keywords);
+    setMatchedSkills(postResponse.data.matched_keywords);
   } 
 
   catch (err) {
@@ -359,7 +355,22 @@ const filteredSuggestions = (() => {
         </div>
         
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>Missing Skills and Keywords</h2>
+          <h2 style={styles.sectionTitle}>Matched Keywords</h2>
+          {matchedSkills.length > 0 ? (
+            <ListGroup>
+              {matchedSkills.map((skill, index) => (
+                <ListGroupItem key={index} style={styles.listItem}>
+                  {skill}
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          ) : (
+            <p>Find out what skills you align with the job description.</p>
+          )}
+        </div>
+
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>Missing Keywords</h2>
           {missingSkills.length > 0 ? (
             <ListGroup>
               {missingSkills.map((skill, index) => (
@@ -369,7 +380,7 @@ const filteredSuggestions = (() => {
               ))}
             </ListGroup>
           ) : (
-            <p>Find out what skills match your job requirements.</p>
+            <p>Find out what skills you are missing.</p>
           )}
         </div>
         
