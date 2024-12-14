@@ -380,7 +380,50 @@ async function getMissingKeywords(resume_text, job_description) {
                         description and not in the resume. List only the keywords, one after the other,
                         separated by a comma and without numbering or hyphenating. Make sure the keywords
                         are most relevant to the job description, prioritizing hard skills and 
-                        experience over location and vague terms.
+                        experience over location and vague terms. Capitalize each one.
+
+                    Job Description:
+                    ${job_description}
+
+                    Resume:
+                    ${resume_text}
+
+                    Feedback:` 
+                }
+            ]
+        });
+        
+        const content = completion.choices[0].message.content;
+
+        // Split the feedback into an array of sentences by looking for sentence-ending punctuation
+        const contentArray = content
+            .split(", ")  // Split by period followed by space (end of sentence)
+            .map(item => item.trim()) // Trim spaces
+            .filter(item => item.length > 0); // Remove empty items
+
+        return contentArray; // Return feedback as an array of sentences
+    } catch (error) {
+        console.error("Error generating completion:", error);
+        throw new Error("Failed to generate feedback.");
+    }
+}
+
+async function getMatchedKeywords(resume_text, job_description) {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "user", 
+                    content: `You are a professional career coach. 
+                        Provide a list of up to 5 keywords that are in the job 
+                        description and in the resume. List only the keywords, one after the other,
+                        separated by a comma and without numbering or hyphenating. Make sure the keywords
+                        are most relevant to the job description, prioritizing hard skills and 
+                        experience over location and vague terms. Capitalize each one.
 
                     Job Description:
                     ${job_description}
@@ -420,8 +463,9 @@ async function getSuggestions(resume_text, job_description) {
                     role: "user", 
                     content: `You are a professional career coach. Provide 3 suggestions
                     for the following resume to align it better with the 
-                    given job description. Each suggestion should focus on a different aspect 
-                    of the resume and be brief, no more than 1 sentence per feedback point. Do not number them.
+                    given job description. The first suggestion should be what skills are needed. The second should be what experiences should be added. 
+                    The last should be how the format of the resume can be better.
+                    Each suggestion should be brief, no more than 1 sentence per feedback point. Do not number or add labels to the categories.
 
                     Job Description:
                     ${job_description}
@@ -476,6 +520,7 @@ app.post('/api/analyze', async (req, res) => {
         const missingKeywords = await getMissingKeywords(g_resume_text, g_job_description_text);
 
         const suggestions = await getSuggestions(g_resume_text, g_job_description_text);
+        const matchedKeywords = await getMatchedKeywords(g_resume_text, g_job_description_text);
 
         //console.log("Data feedback type: ", Array.isArray(suggestions)); -> suggestions is an array
 
@@ -486,7 +531,8 @@ app.post('/api/analyze', async (req, res) => {
             "fit_score": fitScore,
             "feedback": feedback, 
             "missing_keywords": missingKeywords,
-            "suggestions": suggestions
+            "suggestions": suggestions, 
+            "matched_keywords": matchedKeywords
         });
         
     } catch (error) {
@@ -497,19 +543,6 @@ app.post('/api/analyze', async (req, res) => {
     }
 });
 
-/*
-
------------------------------   -----------------------------------
-
-*/
-
-
-
-/*
-
------------------------------ START APP  -----------------------------------
-
-*/
 
 // Start the server (only if not in test mode)
 if (process.env.NODE_ENV !== 'test') {
