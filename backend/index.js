@@ -377,7 +377,7 @@ async function getMissingKeywords(resume_text, job_description) {
                     role: "user", 
                     content: `You are a professional career coach. 
                         Provide a list of up to 5 keywords that are in the job 
-                        description and not in the resume. Make sure the keywords are not in the resume. List only the keywords, one after the other,
+                        description and not in the resume. Make sure the keywords are not in the resume. If they sound similar, do not include it. List only the keywords, one after the other,
                         separated by a comma and without numbering or hyphenating. Make sure the keywords
                         are most relevant to the job description, prioritizing hard skills and 
                         experience over location and vague terms. Capitalize each one.
@@ -420,7 +420,7 @@ async function getMatchedKeywords(resume_text, job_description) {
                     role: "user", 
                     content: `You are a professional career coach. 
                         Provide a list of up to 5 keywords that are both in the job 
-                        description and in the resume. They must be present in both. List only the keywords, one after the other,
+                        description and in the resume. They must be present in both texts. List only the keywords, one after the other,
                         separated by a comma and without numbering or hyphenating. Make sure the keywords
                         are most relevant to the job description, prioritizing hard skills and 
                         experience over location and vague terms. Capitalize each one.
