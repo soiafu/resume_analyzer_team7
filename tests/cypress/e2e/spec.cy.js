@@ -161,6 +161,85 @@ describe('Successful Inputs', () => {
 
 });
 
+``
+
+describe('Fit Score Test', () => {
+  it('Fit Score 0', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: '',
+        fit_score: 0,
+        feedback: ['sample'],
+        missing_keywords: ['sample'],
+        suggestions: ['sample'],
+        matched_keywords: ['sample'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('0%').should('be.visible');
+  });
+
+  it('Fit Score 50', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: '',
+        fit_score: 50,
+        feedback: ['sample'],
+        missing_keywords: ['sample'],
+        suggestions: ['sample'],
+        matched_keywords: ['sample'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('50%').should('be.visible');
+  });
+
+  it('Fit Score 100', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: '',
+        fit_score: 100,
+        feedback: ['sample'],
+        missing_keywords: ['sample'],
+        suggestions: ['sample'],
+        matched_keywords: ['sample'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('100%').should('be.visible');
+  });
+});
+
+describe('API Integration', () => {
+  it('handles API data correctly', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: 'Submitted successfully.',
+        fit_score: 75,
+        feedback: ['Feedback 1', 'Feedback 2'],
+        missing_keywords: ['Keyword 1'],
+        suggestions: ['Suggestion 1', 'Suggestion 2'],
+        matched_keywords: ['Keyword 2'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('75%').should('be.visible'); // Verify fit score is displayed
+    cy.contains('Keyword 2').should('be.visible'); // Verify feedback is displayed
+    cy.contains('Keyword 1').should('be.visible');
+    cy.contains('Suggestion 1').should('be.visible'); // Verify suggestions are displayed
+    cy.contains('Suggestion 2').should('be.visible');
+  });
+});
+
+
 describe('End to End', () => {
   it('Successful End to End', { timeout: 50000 }, () => {
     const filePath = 'test.pdf';
@@ -198,3 +277,5 @@ describe('End to End', () => {
     cy.get('button').contains('Download PDF Report').click();
   });
 });
+
+
