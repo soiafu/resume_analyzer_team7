@@ -253,6 +253,7 @@ const [matchedSkills, setMatchedSkills] = useState('');
 const [suggestions, setSuggestions] = useState(['', '', '']);
 const [filter, setFilter] = useState("all");
 const [feedback, setFeedback] = useState();
+const [resultsLoading, setResultsLoading] = useState(false);
 
 const getFitScore = async (e) => {
   e.preventDefault();
@@ -261,11 +262,12 @@ const getFitScore = async (e) => {
   setScore('');
   
   try {
+    setResultsLoading('true');
     const postResponse = await axios.post('http://localhost:5000/api/analyze', {
         "resume_text": resumeContent,
         "job_description": description
     });
-    console.log('POST response data:', postResponse.data);
+    setResultsLoading('false');
     setS(postResponse.data.message);
     setScore(postResponse.data.fit_score);
     setFeedback(postResponse.data.feedback);
@@ -275,6 +277,7 @@ const getFitScore = async (e) => {
   } 
 
   catch (err) {
+    setResultsLoading('false');
     if (err.response) {
       setDescLoading(false);
       console.log('Backend error message:', err.response.data.message);
@@ -345,6 +348,7 @@ const filteredSuggestions = (() => {
         <form id="get-results" onSubmit={getFitScore}>
           {er && <p style={styles.error}>{er}</p>}
           {s && <div style={{ color: 'green' }}>{s}</div>}
+          {resultsLoading && ( <div style={styles.loaderContainer}> <TailSpin height="40" width="40" color="blue" /></div>)}
           <button style={styles.resultsButton} type="submit">Get My Results!</button>
         </form>
       </div>  
