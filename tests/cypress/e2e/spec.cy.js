@@ -162,7 +162,7 @@ describe('Successful Inputs', () => {
 });
 
 describe('End to End', () => {
-  it('Successful End to End', () => {
+  it('Successful End to End', { timeout: 50000 }, () => {
     const filePath = 'test.pdf';
     cy.visit('http://localhost:3000/dashboard'); 
     cy.get('input[type="file"]').attachFile(filePath);
@@ -193,6 +193,8 @@ describe('End to End', () => {
     cy.contains('Job description submitted successfully.').should('be.visible');
     cy.get('button[type="submit"]').contains('Get My Results!').click();
     cy.contains('Submitted successfully.').should('be.visible');
+    cy.contains('Matched Keywords').should('be.visible');
+    cy.contains('Missing Keywords').should('be.visible');
     cy.get('button').contains('Download PDF Report').click();
   });
 });
