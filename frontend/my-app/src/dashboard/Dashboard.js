@@ -171,8 +171,9 @@ function makePDF(text) {
 }
 
 const [pdfError, setPdfError] = useState('');
+
 //for user to download the resume
-function generatePDF(fitScore, missingSkills, feedback) {
+function generatePDF(fitScore, missingSkills, matchedSkills, feedback) {
   console.log("this is the feedback:", feedback)
   setPdfError('')
   if(fitScore==('') || missingSkills==('') || feedback==('')){
@@ -187,42 +188,60 @@ function generatePDF(fitScore, missingSkills, feedback) {
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
   doc.text(`Fit Score: ${fitScore}%`, 10, 40);
+
+  // Matched Skills section
   doc.setFillColor(200, 200, 200);
   doc.rect(10, 50, 190, 10, "F");
   doc.setFont("helvetica", "bold");
-  doc.text("Missing Skills and Keywords:", 10, 57);
+  doc.text("Matched Skills and Keywords:", 10, 57);
+  doc.setFont("helvetica", "normal");
+  let matchedSkillsStartY = 65;
+  matchedSkills.forEach((keyword, index) => {
+    doc.text(`- ${keyword}`, 15, matchedSkillsStartY + index * 10);
+  });
+
+  // Missing Skills section
+  const missingSkillsStartY = matchedSkillsStartY + matchedSkills.length * 10 + 10;
+  doc.setFillColor(200, 200, 200);
+  doc.rect(10, missingSkillsStartY - 7, 190, 10, "F");
+  doc.setFont("helvetica", "bold");
+  doc.text("Missing Skills and Keywords:", 10, missingSkillsStartY);
   doc.setFont("helvetica", "normal");
   missingSkills.forEach((keyword, index) => {
-    doc.text(`- ${keyword}`, 15, 65 + index * 10);
+    doc.text(`- ${keyword}`, 15, missingSkillsStartY + 10 + index * 10);
   });
-  const feedbackStartY = 65 + missingSkills.length * 10 + 10;
+
+  // Feedback section
+  const feedbackStartY = missingSkillsStartY + missingSkills.length * 10 + 10;
   doc.setFillColor(200, 200, 200);
   doc.rect(10, feedbackStartY - 7, 190, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Feedback:", 10, feedbackStartY);
   doc.setFont("helvetica", "normal");
-  const maxWidth = 180; // Adjust width for margins
-  let y = feedbackStartY + 10; // Start position for feedback
-  const lineHeight = 10; // Spacing between lines
-  const pageHeight = 280; // Approx height for content in A4 (leaving bottom margin)
+
+  const maxWidth = 180; 
+  let y = feedbackStartY + 10; 
+  const lineHeight = 10; 
+  const pageHeight = 280; 
 
   feedback.forEach((item) => {
-      const lines = doc.splitTextToSize(`${item}`, maxWidth); // Wrap text within maxWidth
+      const lines = doc.splitTextToSize(`${item}`, maxWidth); 
       
       lines.forEach((line) => {
           if (y + lineHeight > pageHeight) {
-              doc.addPage(); // Add new page if content exceeds the current page height
-              y = 10; // Reset y position for new page
+              doc.addPage(); 
+              y = 10; 
           }
-          doc.text(line, 15, y); // Render the line at current position
-          y += lineHeight; // Increment y for next line
+          doc.text(line, 15, y); 
+          y += lineHeight; 
       });
   });
-    doc.setFontSize(10);
-    doc.text("Page 1", 105, 290, { align: "center" });
-    doc.save("Resume_Analysis_Report.pdf");
+  
+  doc.setFontSize(10);
+  doc.text("Page 1", 105, 290, { align: "center" });
+  doc.save("Resume_Analysis_Report.pdf");
+}
 
-  }
 
 
 const [er, setE] = useState('');
@@ -263,12 +282,6 @@ const getFitScore = async (e) => {
     } 
   }
 }
-
-/*
-const filteredSuggestions = suggestions.filter((suggestion) =>
-  filter === "all" ? true : suggestion.category === filter
-);
-*/
 
 const filteredSuggestions = (() => {
   if (filter === "All") {
@@ -405,7 +418,7 @@ const filteredSuggestions = (() => {
       </div>
 
         {pdfError && <p style={styles.error}>{pdfError}</p>}
-        <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, missingSkills, suggestions)}>
+        <button style={styles.resultsButton} onClick={() => generatePDF(fitScore, missingSkills, matchedSkills, suggestions)}>
           Download PDF Report
         </button>
       </div>
