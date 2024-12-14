@@ -132,6 +132,16 @@ describe('Invalid Inputs', () => {
 });
 
 describe('Successful Inputs', () => {
+  /*
+  it('Successful Resume File Pasted', () => {
+    cy.visit('http://localhost:3000/dashboard'); 
+    const resume = `demo resume`;
+    cy.get('textarea[placeholder="Paste the resume here..."]',)
+      .type(resume, {  parseSpecialCharSequences: false});
+    cy.get('button[type="submit"]').contains('Generate PDF').click();
+    cy.contains('Resume uploaded successfully.').should('be.visible');
+  });
+*/
   it('Successful Resume File Upload', () => {
     const filePath = 'test.pdf';
     cy.visit('http://localhost:3000/dashboard'); 
@@ -139,16 +149,6 @@ describe('Successful Inputs', () => {
     cy.get('button[type="submit"]').contains('Upload').click();
     cy.contains('Resume uploaded successfully.').should('be.visible');
   });
-
-  /*
-  it('Successful Resume Typed', () => {
-    cy.visit('http://localhost:3000/dashboard'); 
-    const description = `demo resume`;
-    cy.get('textarea[placeholder="Paste the resume here..."]',)
-      .type(description, {  parseSpecialCharSequences: false});
-    cy.get('button[type="submit"]').contains('Generate PDF').click();
-    cy.contains('Resume uploaded successfully.').should('be.visible');
-  });*/ 
 
   it('Successful Description Upload', () => {
     cy.visit('http://localhost:3000/dashboard'); 

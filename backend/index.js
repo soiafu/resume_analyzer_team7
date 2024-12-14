@@ -207,7 +207,7 @@ app.post("/api/resume-upload", upload.single('resume_file'), async (req, res) =>
   
     if (!file && !text) {
         return res.status(400).json({
-            "error": "Job description not provided",
+            "error": "File not found",
             "status": "error"
         })
     }
@@ -377,7 +377,7 @@ async function getMissingKeywords(resume_text, job_description) {
                     role: "user", 
                     content: `You are a professional career coach. 
                         Provide a list of up to 5 keywords that are in the job 
-                        description and not in the resume. List only the keywords, one after the other,
+                        description and not in the resume. Make sure the keywords are not in the resume. List only the keywords, one after the other,
                         separated by a comma and without numbering or hyphenating. Make sure the keywords
                         are most relevant to the job description, prioritizing hard skills and 
                         experience over location and vague terms. Capitalize each one.
@@ -419,8 +419,8 @@ async function getMatchedKeywords(resume_text, job_description) {
                 { 
                     role: "user", 
                     content: `You are a professional career coach. 
-                        Provide a list of up to 5 keywords that are in the job 
-                        description and in the resume. List only the keywords, one after the other,
+                        Provide a list of up to 5 keywords that are both in the job 
+                        description and in the resume. They must be present in both. List only the keywords, one after the other,
                         separated by a comma and without numbering or hyphenating. Make sure the keywords
                         are most relevant to the job description, prioritizing hard skills and 
                         experience over location and vague terms. Capitalize each one.
@@ -461,11 +461,9 @@ async function getSuggestions(resume_text, job_description) {
             messages: [
                 { 
                     role: "user", 
-                    content: `You are a professional career coach. Provide 3 suggestions
-                    for the following resume to align it better with the 
-                    given job description. The first suggestion should be what skills are needed. The second should be what experiences should be added. 
-                    The last should be how the format of the resume can be better.
-                    Each suggestion should be brief, no more than 1 sentence per feedback point. Do not number or add labels to the categories.
+                    content: `You are a professional career coach looking at the following resume to align it better with the 
+                    given job description. Give a suggestion on what skills are needed Give a suggestion on what experiences should be added. Give a suggestion on how the format of the resume can be better.
+                   There should be a total of 3 brief suggestions, no more than 1 sentence per suggestion. Do not number or add labels to the categories.
 
                     Job Description:
                     ${job_description}
@@ -502,8 +500,8 @@ app.post('/api/analyze', async (req, res) => {
         let job_descriptions = req.body ["job_description"];
 
         // Validate input
-        if (!g_resume_text || !g_job_description_text) {
-            return res.status(400).json({ error: "Missing resume_text or job_description" });
+        if (!resume_text || !job_descriptions) {
+            return res.status(400).json({ error: "Invalid input data. Both resume and job description are required." });
         }        
 
         // Fetch fit score from Hugging Face model
