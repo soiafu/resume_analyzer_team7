@@ -221,6 +221,7 @@ feedback.forEach((item) => {
     });
 });
 
+
   doc.setFontSize(10);
   doc.text("Page 1", 105, 290, { align: "center" });
   doc.save("Resume_Analysis_Report.pdf");
