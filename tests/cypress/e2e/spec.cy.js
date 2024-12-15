@@ -238,7 +238,74 @@ describe('API Integration', () => {
     cy.contains('Suggestion 2').should('be.visible');
   });
 });
+describe('Filtering Feedback', () => {
+  beforeEach(() => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: 'Feedback submitted successfully.',
+        fit_score: 80,
+        feedback: ['keyword'],
+        missing_keywords: ['Keyword 1'],
+        suggestions: ["Include experience with AWS services.", "Add projects demonstrating REST API development.", "Ensure consistent formatting across sections."],
+        matched_keywords: ['Keyword 2'],
+      },
+    }).as('analyzeAPI');
+  });
 
+  it('filters feedback based on the selected category', () => {
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.wait('@analyzeAPI');
+
+    cy.contains('Include experience with AWS services.').should('be.visible');
+    cy.contains('Add projects demonstrating REST API development.').should('be.visible');
+    cy.contains('Ensure consistent formatting across sections.').should('be.visible');
+
+    cy.get('select').select('Skills');
+    cy.contains('Include experience with AWS services.').should('be.visible');
+
+    cy.get('select').select('Experience');
+    cy.contains('Add projects demonstrating REST API development.').should('be.visible');
+
+    cy.get('select').select('Formatting');
+    cy.contains('Ensure consistent formatting across sections.').should('be.visible');
+  });
+});
+
+describe('Edge Cases', () => {
+  it('no fit score', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: 'Submitted successfully.',
+        feedback: ['Feedback 1', 'Feedback 2'],
+        missing_keywords: ['Keyword 1'],
+        suggestions: ['Suggestion 1', 'Suggestion 2'],
+        matched_keywords: ['Keyword 2'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('undefined%').should('be.visible');
+  });
+  it('no suggestion array', () => {
+    cy.intercept('POST', 'http://localhost:5000/api/analyze', {
+      statusCode: 200,
+      body: {
+        message: 'Submitted successfully.',
+        fit_score: 80,
+        feedback: [],
+        missing_keywords: ['Keyword 1'],
+        suggestions: [],
+        matched_keywords: ['Keyword 2'],
+      },
+    }).as('analyzeAPI');
+    cy.visit('http://localhost:3000/dashboard');
+    cy.get('button[type="submit"]').contains('Get My Results!').click();
+    cy.contains('No suggestions available for the selected category.').should('be.visible');
+  });
+});
 
 describe('End to End', () => {
   it('Successful End to End', { timeout: 50000 }, () => {
