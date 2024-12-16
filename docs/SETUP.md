@@ -42,7 +42,7 @@ You can run the backend tests using:
 <pre> npm test </pre>  
 
 You can run the frontend end-to-end tests using Cypress after downloading:
-<pre> npx install cypress </pre> 
+<pre> npm install cypress </pre> 
 <pre> npx cypress open </pre>  
 Once Cypress is opened, click on "E2E Testing".
 After choosing your preferred browser, click "Start E2E Testing".
