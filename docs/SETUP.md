@@ -24,21 +24,25 @@ Run the backend server from the terminal:
 The server will run at http://localhost:5000.
 
 Next, open a new terminal then go to the frontend directory: 
-<pre> cd resume_analyer_team7\frontend\my-app </pre> 
+<pre> cd resume_analyer_team7 </pre> 
+<pre> cd frontend </pre>
 Install the required packages:
 <pre> npm install </pre>
-Start the React development server with:
+<pre> cd my-app </pre>
+Download then start the React development server with:
+<pre> npm install react-scripts </pre>  
 <pre> npm start </pre>
 The app will run at http://localhost:3000 by default.
 
 **Run Tests** (optional)  
 Open a new terminal and navigate to the tests directory: 
-<pre> cd resume_analyzer_team7\tests </pre>
-
+<pre> cd resume_analyzer_team7 </pre>
+<pre> cd tests </pre>
 You can run the backend tests using:
 <pre> npm test </pre>  
 
-You can run the frontend end-to-end tests using Cypress:
+You can run the frontend end-to-end tests using Cypress after downloading:
+<pre> npx install cypress </pre> 
 <pre> npx cypress open </pre>  
 Once Cypress is opened, click on "E2E Testing".
 After choosing your preferred browser, click "Start E2E Testing".
